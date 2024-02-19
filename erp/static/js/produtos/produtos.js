@@ -210,24 +210,27 @@ function formatarMoeda(input) {
 
 function preview(editar=false) {
     if (editar) {
-        let frame = document.getElementById('frame_editar');
+        let frame_editar = document.getElementById('frame_editar');
+        frame_editar.src = URL.createObjectURL(event.target.files[0]);
+        frame_editar.hidden=false;
     }
     else {
         let frame = document.getElementById('frame');
+        frame.src = URL.createObjectURL(event.target.files[0]);
+        frame.hidden=false;
     }
-    console.log(event.target.files[0]);
-    frame.src = URL.createObjectURL(event.target.files[0]);
-    frame.hidden=false;
 }
 function clearImage(editar=false) {
     if (editar) {
         document.getElementById('formFile_editar').value = null;
-        let frame = document.getElementById('frame_editar');
+        let frame_editar = document.getElementById('frame_editar');
+        frame_editar.src = "";
+        frame_editar.hidden=true;
     }
     else {
         document.getElementById('formFile').value = null;
         let frame = document.getElementById('frame');
+        frame.src = "";
+        frame.hidden=true;
     }
-    frame.src = "";
-    frame.hidden=true;
 }
