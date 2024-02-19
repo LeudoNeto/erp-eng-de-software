@@ -1,0 +1,131 @@
+<ul class="menu-inner py-1">
+  <li class="menu-header small text-uppercase">
+    <span class="menu-header-text">Início</span>
+  </li>
+  <li class="menu-item {% if link_atual == 'index' %} active {% endif %}">
+    <a href="/" class="menu-link">
+      <i class="menu-icon tf-icons bx bx-home-circle"></i>
+      <div data-i18n="Analytics">Página Inicial</div>
+    </a>
+  </li>
+
+  <li class="menu-item">
+    <a href="javascript:void(0);" class="menu-link menu-toggle">
+      <i class="menu-icon tf-icons bx bx-crown"></i>
+      <div data-i18n="Layouts">Administrativo</div>
+    </a>
+
+    <ul class="menu-sub">
+      <li class="menu-item">
+        <a href="layouts-without-menu.html" class="menu-link">
+          <div data-i18n="Without menu">Gerenciar funcionários</div>
+        </a>
+      </li>
+      <li class="menu-item">
+        <a href="layouts-without-navbar.html" class="menu-link">
+          <div data-i18n="Without navbar">Dados da Empresa</div>
+        </a>
+      </li>
+    </ul>
+  </li>
+
+  <li class="menu-header small text-uppercase">
+    <span class="menu-header-text">Estoque</span>
+  </li>
+
+  <li class="menu-item">
+    <a href="#" class="menu-link">
+      <i class="menu-icon tf-icons bx bx-box"></i>
+      <div data-i18n="Visão Geral">Visão Geral</div>
+    </a>
+  </li>
+
+  <li class="menu-item {% if link_atual == 'produtos' %} active {% endif %}">
+    <a href="/produtos" class="menu-link">
+      <i class="menu-icon tf-icons bx bxs-component"></i>
+      <div data-i18n="Produtos">Produtos</div>
+    </a>
+  </li>
+
+  <li class="menu-item">
+    <a href="javascript:void(0);" class="menu-link menu-toggle">
+      <i class="menu-icon tf-icons bx bx-transfer"></i>
+      <div data-i18n="Movimentações">Movimentações</div>
+    </a>
+
+    <ul class="menu-sub">
+      <li class="menu-item">
+        <a href="layouts-without-menu.html" class="menu-link">
+          <div data-i18n="Compras">Compras</div>
+        </a>
+      </li>
+      <li class="menu-item">
+        <a href="layouts-without-navbar.html" class="menu-link">
+          <div data-i18n="Vendas">Vendas</div>
+        </a>
+      </li>
+      <li class="menu-item">
+        <a href="layouts-without-navbar.html" class="menu-link">
+          <div data-i18n="Histórico">Histórico</div>
+        </a>
+      </li>
+    </ul>
+  </li>
+
+  <li class="menu-header small text-uppercase">
+    <span class="menu-header-text">Financeiro</span>
+  </li>
+
+  <li class="menu-item">
+    <a href="icons-boxicons.html" class="menu-link">
+      <i class="menu-icon tf-icons bx bx-qr-scan"></i>
+      <div data-i18n="Emitir NF-e">Emitir NF-e</div>
+    </a>
+  </li>
+
+  <li class="menu-item">
+    <a href="icons-boxicons.html" class="menu-link">
+      <i class="menu-icon tf-icons bx bx-note"></i>
+      <div data-i18n="Emitir Comprovante">Emitir Comprovante</div>
+    </a>
+  </li>
+
+
+  <li class="menu-header small text-uppercase">
+    <span class="menu-header-text">Vidraçaria</span>
+  </li>
+
+  <li class="menu-item">
+    <a href="icons-boxicons.html" class="menu-link">
+      <i class="menu-icon tf-icons bx bx-map-alt"></i>
+      <div data-i18n="Desenho do Projeto">Desenho do Projeto</div>
+    </a>
+  </li>
+
+  <!-- Misc -->
+  <li class="menu-header small text-uppercase">
+    <span class="menu-header-text">Outros</span>
+  </li>
+
+  <li class="menu-item" id="themeSwitcherMenu">
+    <a onclick="toggleDarkMode()" style="cursor: pointer;" class="menu-link">
+      <i class="menu-icon tf-icons bx bx-moon"></i>
+      <div data-i18n="Suporte">Modo Escuro</div>
+    </a>
+  </li>
+
+  <li class="menu-item">
+    <a href="icons-boxicons.html" class="menu-link">
+      <i class="menu-icon tf-icons bx bx-support"></i>
+      <div data-i18n="Suporte">Suporte</div>
+    </a>
+  </li>
+
+  <li class="menu-item">
+    <a href="icons-boxicons.html" class="menu-link">
+      <i class="menu-icon tf-icons bx bxl-instagram"></i>
+      <div data-i18n="Contato">Contato</div>
+    </a>
+  </li>
+
+</ul>

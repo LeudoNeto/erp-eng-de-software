@@ -1,0 +1,70 @@
+<!-- Modal -->
+
+<div class="modal fade modal-static" id="modal_criar_produto" tabindex="-1" aria-hidden="true">
+  <div class="modal-aumentado modal-dialog" role="document">
+    <div class="modal-content">
+      <form id="form_criar_produto">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel1">Criar Produto</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          
+          <div class="row mb-3 g-2">
+            <label for="nome" class="form-label">Nome: *</label>
+            <input type="text" id="nome" name="nome" class="form-control" required />  
+          </div>
+          <div class="row mb-3 g-2">
+            <label for="descricao" class="form-label">Descrição:</label>
+            <input type="text" id="descricao" name="descricao" class="form-control"  />  
+          </div>
+          <div class="row mb-3 g-2">
+            <label for="codigo_referencia" class="form-label">Código de Referência: *</label>
+            <input type="text" id="codigo_referencia" name="codigo_referencia" class="form-control" required />  
+          </div>
+
+          <div class="row mb-3 g-2">
+            <div class="col-sm-6 px-2">
+              <label for="valor_custo_padrao" class="form-label">Valor de Custo Padrão:</label>
+              <div class="input-group">
+                <span class="input-group-text">R$</span>
+                <input type="text" id="valor_custo_padrao" name="valor_custo_padrao" class="form-control" style="text-align: right;" oninput="formatarMoeda(this)" />  
+              </div>
+            </div> 
+
+            <div class="col-sm-6 px-2">
+              <label for="valor_venda_padrao" class="form-label">Valor de Venda Padrão:</label>
+              <div class="input-group">
+                <span class="input-group-text">R$</span>
+                <input type="text" id="valor_venda_padrao" name="valor_venda_padrao" class="form-control" style="text-align: right;" oninput="formatarMoeda(this)" />  
+              </div>
+            </div>
+          </div>
+
+          <div class="row mb-3 g-2">
+            <div class="mb-5">
+              <label for="Image" class="form-label">Foto:</label>
+              <input class="form-control" type="file" id="formFile" name="foto" onchange="preview()">
+              <button type="button" onclick="clearImage()" class="btn btn-primary mt-3">Limpar foto</button>
+            </div>
+          <img id="frame" src="" style="height:128px; width:128px;" class="img-fluid" hidden />
+
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="reset" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            Fechar
+          </button>
+          <button type="button" id="salvar_produto" class="btn btn-primary">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

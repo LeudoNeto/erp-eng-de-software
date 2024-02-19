@@ -1,0 +1,15 @@
+{% extends 'navbar/navbar.html' %}
+
+{% block content %}
+
+<div class="row">
+    {% include "index/graficos/produtos.html" %}
+    {% include "index/graficos/vendas.html" %}
+    <div class="col-lg-4 col-md-4 order-1">
+        <div class="row">
+            {% include "index/atalhos.html" %}
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
