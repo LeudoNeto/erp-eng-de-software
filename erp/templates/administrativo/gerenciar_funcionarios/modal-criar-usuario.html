@@ -1,0 +1,68 @@
+<!-- Modal -->
+
+<div class="modal fade modal-static" id="modal_criar_usuario" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form id="form_criar_usuario">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel1">Cadastrar Funcionário</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            
+            <div class="row mb-3 g-2">
+              <label for="nome" class="form-label">Nome: *</label>
+              <input type="text" id="nome" name="nome" class="form-control" required />  
+            </div>
+            <div class="row mb-3 g-2">
+              <label for="email" class="form-label">Email: *</label>
+              <input type="email" id="email" name="email" class="form-control" required />
+            </div>
+            <div class="row mb-3 g-2">
+              <label for="telefone" class="form-label">Telefone: *</label>
+              <input type="text" id="telefone" name="telefone" class="form-control" required />
+            </div>
+            <div class="row mb-3 g-2">
+              <label for="cargo" class="form-label">Cargo: *</label>
+              <select id="cargo" name="cargo" class="form-select" required>
+                <option value="" selected disabled>Selecione um cargo</option>
+                {% for cargo in cargos %}
+                  <option value="{{ cargo.id }}">{{ cargo.nome }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="row mb-3 g-2">
+              <div class="col-6">
+                <label for="senha" class="form-label">Senha: *</label>
+                <input type="password" id="password" name="password" class="form-control" required />
+              </div>
+
+              <div class="col-6">
+                <label for="confirmar_senha" class="form-label">Confirmar Senha: *</label>
+                <input type="password" id="confirmar_senha" class="form-control" required />
+              </div>
+            </div>
+
+            <div class="row mb-3 g-2">
+                <label for="foto" class="form-label">Foto:</label>
+                <input type="file" id="foto" name="foto" class="form-control" />
+            </div>
+  
+          </div>
+          <div class="modal-footer">
+            <button type="reset" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+              Fechar
+            </button>
+            <button type="button" id="salvar_usuario" class="btn btn-primary">Salvar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>

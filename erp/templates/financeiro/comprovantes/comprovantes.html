@@ -1,0 +1,68 @@
+{% extends 'navbar/navbar.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="card">
+  <div class="d-flex justify-content-between align-items-center w-100">
+    <h5 class="card-header">Histórico de Comprovantes</h5>
+    <button class="btn btn-primary me-4" data-bs-toggle="modal" data-bs-target="#modal_emitir_comprovante">Emitir Comprovante</button>
+  </div>
+  <div class="text-nowrap">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Método de Pagamento</th>
+          <th>Subtotal</th>
+          <th>Total</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody class="table-border-bottom-0">
+        {% for comprovante in comprovantes %}
+          <tr>
+            <td>{{ comprovante.cliente }}</td>
+            <td>
+              {% if comprovante.metodo_pagamento == 'd' %}
+                Dinheiro
+              {% elif comprovante.metodo_pagamento == 'p' %}
+                PIX
+              {% elif comprovante.metodo_pagamento == 'd' %}
+                Débito
+              {% else %}
+                Crédito
+              {% endif %}
+            </td>
+            <td>{{ comprovante.subtotal }}</td>
+            <td>{{ comprovante.total }}</td>
+            <td>
+              <div class="dropdown">
+                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                  <i class="bx bx-dots-vertical-rounded"></i>
+                </button>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" href="/financeiro/comprovantes/{{ comprovante.id }}" target="_blank"
+                    ><i class="bx bx-printer me-1"></i>Imprimir</a
+                  >
+                  <a class="dropdown-item" href="#" data-id="{{ comprovante.id }}" id="excluir_comprovante"
+                    ><i class="bx bx-trash me-1"></i>Excluir</a
+                  >
+                </div>
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% include "financeiro/comprovantes/modal-emitir-comprovante.html" %}
+{% include "financeiro/comprovantes/tabela-produtos-emitir-comprovante.html" %}
+
+
+<script src="{% static "js/comprovantes/comprovantes.js" %}"></script>
+
+{% endblock content %}

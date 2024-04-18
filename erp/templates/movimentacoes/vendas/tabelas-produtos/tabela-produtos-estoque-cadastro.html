@@ -1,0 +1,79 @@
+<!-- Modal -->
+
+<div class="modal fade modal-static" id="{% block id_modal %}tabela_produtos_estoque_cadastro_venda{% endblock id_modal %}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog" style="max-width: 75%;" role="document">
+      <div class="modal-content">
+        <form id="{% block id_form %}form_tabela_produtos_estoque_cadastro_venda{% endblock id_form %}">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title">{% block titulo_modal %}Produtos Vendidos (do Estoque){% endblock titulo_modal %}</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body" style="overflow-x: scroll;">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th> </th>
+                  <th>Produto</th>
+                  <th>Localização</th>
+                  <th>Quantidade</th>
+                  <th>Valor Custo</th>
+                  <th>Valor Venda</th>
+                  <th>Total Custo</th>
+                  <th>Total Venda</th>
+                </tr>
+              </thead>
+              <tbody class="table-border-bottom-0">
+                {% for produto_estoque in produtos_estoque %}
+                  <tr class="{% block class_linha_produto %}produto_estoque_cadastro{% endblock class_linha_produto %}">
+                    <td><input type="checkbox" id="checkbox_produto" class="form-check-input" data-produto-estoque-id="{{ produto_estoque.id }}" data-id="{{ produto_estoque.produto_id }}" disabled></td>
+                    <td>
+                      {% if produto_estoque.produto__foto %}
+                        <img src="{{ MEDIA_URL }}{{ produto_estoque.produto__foto }}" height="30px" width="30px" class="rounded-circle me-2" />
+                      {% endif %}
+                      <strong id="produto_estoque_nome">{{ produto_estoque.produto__nome }}</strong>
+                    </td>
+                    <td>{{ produto_estoque.localizacao|truncatechars:13 }}</td>
+                    <td><input type="number" id="quantidade" class="form-control" oninput="calcularPelaQuantidade(this)" data-quantidade="{{ produto_estoque.quantidade }}"></td>
+                    <td>
+                      <div class="input-group" style="min-width: 150px;">
+                        <span class="input-group-text">R$</span>
+                        <input type="text" id="valor_custo" value="{{ produto_estoque.valor_custo }}" class="form-control" style="text-align: right;" oninput="formatarMoeda(this); calcularPeloValorCusto(this)" disabled />  
+                      </div>
+                    </td>
+                    <td>
+                      <div class="input-group" style="min-width: 150px;">
+                        <span class="input-group-text">R$</span>
+                        <input type="text" id="valor_venda" value="{{ produto_estoque.valor_venda }}" class="form-control" style="text-align: right;" oninput="formatarMoeda(this); calcularPeloValorVenda(this)" disabled />  
+                      </div>
+                    </td>
+                    <td>
+                      <div class="input-group" style="min-width: 150px;">
+                        <span class="input-group-text">R$</span>
+                        <input type="text" id="valor_total_custo" value="0,00" class="form-control" style="text-align: right;" oninput="formatarMoeda(this); calcularPeloValorTotalCusto(this)" disabled />  
+                      </div>
+                    </td>
+                    <td>
+                      <div class="input-group" style="min-width: 150px;">
+                        <span class="input-group-text">R$</span>
+                        <input type="text" id="valor_total_venda" value="0,00" class="form-control" style="text-align: right;" oninput="formatarMoeda(this); calcularPeloValorTotalVenda(this)" disabled />  
+                      </div>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            <div class="d-flex justify-content-end">
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#{% block modal_pai_id %}modal_cadastro_venda{% endblock modal_pai_id %}" onclick="{% block funcao_botao_voltar %}atualizarValorSubtotal(){% endblock funcao_botao_voltar %}">Voltar</button>
+            </div>
+  
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>

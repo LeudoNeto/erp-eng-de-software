@@ -8,8 +8,6 @@ from django.http import FileResponse
 from .models import produto
 from .serializers import ProdutoSerializer
 
-from mimetypes import guess_type
-
 class ProdutoViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None):
@@ -45,11 +43,14 @@ class ProdutoViewSet(viewsets.ViewSet):
     def create(self, request, *args, **kwargs):
         try:
             data = request.data.copy()
+            data['empresa'] = request.user.empresa.id
 
             if 'valor_custo_padrao' in data:
                 data['valor_custo_padrao'] = data['valor_custo_padrao'].replace('.', '').replace(',', '.')
             if 'valor_venda_padrao' in data:
                 data['valor_venda_padrao'] = data['valor_venda_padrao'].replace('.', '').replace(',', '.')
+            if 'aliquota_icms' in data:
+                data['aliquota_icms'] = data['aliquota_icms'].replace('.', '').replace(',', '.')
 
             produto_serializer = ProdutoSerializer(data=data)
             if produto_serializer.is_valid():
@@ -69,17 +70,20 @@ class ProdutoViewSet(viewsets.ViewSet):
         try:
             prod = produto.objects.get(pk=pk)
             data = request.data.copy()
-            print(data)
+            data['empresa'] = request.user.empresa.id
 
             if 'valor_custo_padrao' in data:
                 data['valor_custo_padrao'] = data['valor_custo_padrao'].replace('.', '').replace(',', '.')
             if 'valor_venda_padrao' in data:
                 data['valor_venda_padrao'] = data['valor_venda_padrao'].replace('.', '').replace(',', '.')
+            if 'aliquota_icms' in data:
+                data['aliquota_icms'] = data['aliquota_icms'].replace('.', '').replace(',', '.')
 
-            if not any(data['foto']):
+            if not any(data['foto']) and prod.foto:
             # Se não houver, mantém a foto original na instância do produto
                 data['foto'] = prod.foto
-            print(data)
+            else:
+                del data['foto']
 
             produto_serializer = ProdutoSerializer(prod, data=data)
             if produto_serializer.is_valid():

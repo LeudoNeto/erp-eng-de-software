@@ -1,0 +1,69 @@
+<!-- Modal -->
+
+<div class="modal fade modal-static" id="modal_adicionar_produto" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form id="form_adicionar_produto">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel1">Adicionar Produto</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            
+            <div class="row mb-3 g-2">
+              <label for="produto" class="form-label">Produto: *</label>
+              <select name="produto" id="produto" class="form-select">
+                {% for produto in produtos %}
+                  <option value="{{ produto.id }}">{{ produto.nome }}</option>
+                {% endfor %}
+              </select>  
+            </div>
+            <div class="row mb-3 g-2">
+              <label for="descricao" class="form-label">Descrição:</label>
+              <input type="text" id="descricao" name="descricao" class="form-control"  />  
+            </div>
+            <div class="row mb-3 g-2">
+              <label for="quantidade" class="form-label">Quantidade: *</label>
+              <input type="number" id="quantidade" name="quantidade" class="form-control" required />  
+            </div>
+  
+            <div class="row mb-3 g-2">
+              <div class="col-sm-6 px-2">
+                <label for="valor_custo" class="form-label">Valor de Custo:</label>
+                <div class="input-group">
+                  <span class="input-group-text">R$</span>
+                  <input type="text" id="valor_custo" name="valor_custo" class="form-control" style="text-align: right;" oninput="formatarMoeda(this)" />  
+                </div>
+              </div> 
+  
+              <div class="col-sm-6 px-2">
+                <label for="valor_venda" class="form-label">Valor de Venda:</label>
+                <div class="input-group">
+                  <span class="input-group-text">R$</span>
+                  <input type="text" id="valor_venda" name="valor_venda" class="form-control" style="text-align: right;" oninput="formatarMoeda(this)" />  
+                </div>
+              </div>
+            </div>
+
+            <div class="row mb-3 g-2">
+              <label for="localizacao" class="form-label">Localização:</label>
+              <input type="text" id="localizacao" name="localizacao" class="form-control"  />  
+            </div>
+  
+          </div>
+          <div class="modal-footer">
+            <button type="reset" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+              Fechar
+            </button>
+            <button type="button" id="salvar_produto" class="btn btn-primary">Salvar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,67 @@
+{% extends 'navbar/navbar.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="card">
+  <div class="d-flex justify-content-between align-items-center w-100">
+    <h5 class="card-header">Compras</h5>
+    <button class="btn btn-primary me-4" data-bs-toggle="modal" data-bs-target="#modal_cadastro_compra">Cadastrar Compra</button>
+  </div>
+  <div class="table-responsive text-nowrap">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Data</th>
+          <th>Valor Pago</th>
+          <th>Tipo</th>
+          <th>Quantidade de Produtos</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody class="table-border-bottom-0">
+        {% for transacao in transacoes %}
+          <tr>
+            <td>{{ transacao.cliente }}</td>
+            <td>{{ transacao.data|date:"d/m/Y" }}</td>
+            <td>R$ {{ transacao.valor_total_pago }}</td>
+            <td>
+              {% if transacao.tipo == 'c' %}
+                Compra
+              {% else %}
+                Serviço
+              {% endif %}
+            </td>
+            <td>
+              <button class="btn btn-sm btn-danger" type="button"><i class="bx bx-down-arrow-alt me-1"></i>{{ transacao.produtos_entrada }}</button>
+            </td>
+            <td>
+              <div class="dropdown">
+                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                  <i class="bx bx-dots-vertical-rounded"></i>
+                </button>
+                <div class="dropdown-menu">
+                  {% comment %} <a class="dropdown-item" href="#" data-id="{{ transacao.id }}" id="editar_movimentacao" data-bs-toggle="modal" data-bs-target="#modal_editar_produto"
+                    ><i class="bx bx-edit-alt me-1"></i>Editar</a
+                  > {% endcomment %}
+                  <a class="dropdown-item" href="#" data-id="{{ transacao.id }}" id="excluir_compra"
+                    ><i class="bx bx-trash me-1"></i>Excluir</a
+                  >
+                </div>
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% include "movimentacoes/compras/modal-cadastro-compra.html" %}
+{% include "movimentacoes/compras/tabelas-produtos/tabela-produtos-cadastro.html" %}
+
+<script src="{% static "js/movimentacoes/compras.js" %}"></script>
+
+{% endblock content %}

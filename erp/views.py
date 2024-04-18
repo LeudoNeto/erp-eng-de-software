@@ -1,8 +1,12 @@
 from django.views.generic import TemplateView
+from django.shortcuts import redirect
+
 from .settings import MEDIA_URL
 
 class ErpTemplateView(TemplateView):
     def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('/login/')
         return super().dispatch(request, *args, **kwargs)
     
     def get_context_data(self, **kwargs):
@@ -11,7 +15,6 @@ class ErpTemplateView(TemplateView):
         context["MEDIA_URL"] = MEDIA_URL
         
         return context
-
 
 class IndexView(ErpTemplateView):
     template_name = 'index/index.html'

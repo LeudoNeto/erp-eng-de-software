@@ -1,0 +1,52 @@
+{% extends 'navbar/navbar.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<input type="hidden" id="empresa_id" name="empresa_id" value="{{ empresa.id }}" />
+
+<div class="card">
+  <div class="d-flex justify-content-between align-items-center w-100">
+    <h5 class="card-header">Dados da Empresa</h5>
+  </div>
+  <div class="card-body">
+    <form id="form_dados_empresa">
+      {% csrf_token %}
+      <div class="row mb-3 g-2">
+        <label for="nome" class="form-label">Nome: *</label>
+        <input type="text" id="nome" name="nome" class="form-control" value="{{ empresa.nome }}" required />
+      </div>
+      <div class="row mb-3 g-2">
+        <label for="cnpj" class="form-label">CNPJ: *</label>
+        <input type="text" id="cnpj" name="cnpj" class="form-control" value="{{ empresa.cnpj }}" required />
+      </div>
+      <div class="row mb-3 g-2">
+        <label for="telefone" class="form-label">Telefone: *</label>
+        <input type="text" id="telefone" name="telefone" class="form-control" value="{{ empresa.telefone }}" required />
+      </div>
+      <div class="row mb-3 g-2">
+        <label for="telefone_whatsapp" class="form-label">Telefone WhatsApp:</label>
+        <input type="text" id="telefone_whatsapp" name="telefone_whatsapp" class="form-control" value="{% if empresa.telefone_whatsapp %}{{ empresa.telefone_whatsapp }}{% endif %}" />
+      </div>
+      <div class="row mb-3 g-2">
+        <label for="email" class="form-label">E-mail: *</label>
+        <input type="email" id="email" name="email" class="form-control" value="{{ empresa.email }}" required />
+      </div>
+      <div class="row mb-3 g-2">
+        <label for="endereco" class="form-label">Endereço: *</label>
+        <input type="text" id="endereco" name="endereco" class="form-control" value="{{ empresa.endereco }}" required />
+      </div>
+    </form>
+
+    <div class="justify-content-end d-flex w-100">
+      <button class="btn btn-primary" id="botao_salvar">Salvar</button>
+    </div>
+
+  </div>
+    
+</div>
+
+<script src="{% static "js/administrativo/dados_empresa.js" %}"></script>
+
+{% endblock content %}

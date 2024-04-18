@@ -1,0 +1,71 @@
+<!-- Modal -->
+
+<div class="modal fade modal-static" id="{% block id_modal %}modal_emitir_nota_fiscal{% endblock id_modal %}" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form id="{% block id_form %}form_emitir_nota_fiscal{% endblock id_form %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="{% block titulo_modal %}titulo_modal_emitir_nota_fiscal{% endblock titulo_modal %}">Emitir Nota Fiscal</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+
+          <div class="row mb-3 g-2">
+            <label for="cliente" class="form-label">Cliente: *</label>
+            <input type="text" id="cliente" name="cliente" class="form-control" required />  
+          </div>
+
+          <div class="row mb-3 g-2">
+              <label for="cliente_endereco" class="form-label">Endereço do Cliente: *</label>
+              <input type="text" id="cliente_endereco" name="cliente_endereco" class="form-control" required />  
+          </div>
+
+
+          <div class="row mb-3 g-2">
+            <label for="produtos_vendidos" class="form-label">Produtos Vendidos:</label>
+            <button id="nome" type="button" data-bs-toggle="modal" data-bs-target="#tabela_produtos_emitir_nota_fiscal" class="btn btn-primary mt-0">Selecionar</button>
+          </div>
+
+          <div class="row mb-3 g-2">
+            <label for="valor_total_produtos" class="form-label">Subtotal:</label>
+            <div class="input-group">
+              <span class="input-group-text">R$</span>
+              <input type="text" disabled id="valor_total_produtos" name="valor_total_produtos" value="0,00" class="form-control" style="text-align: right;" />  
+            </div>
+          </div>
+
+          <div class="row mb-3 g-2">
+            <div class="col-sm-6 px-2">
+              <label for="taxas" class="form-label">Taxas:</label>
+              <div class="input-group">
+                <span class="input-group-text">R$</span>
+                <input type="text" id="taxas" name="taxas" value="0,00" class="form-control" style="text-align: right;" oninput="formatarMoeda(this)" />  
+              </div>
+            </div> 
+
+            <div class="col-sm-6 px-2">
+              <label for="desconto" class="form-label">Desconto:</label>
+              <div class="input-group">
+                <span class="input-group-text">R$</span>
+                <input type="text" id="desconto" name="desconto" value="0,00" class="form-control" style="text-align: right;" oninput="formatarMoeda(this)" />  
+              </div>
+            </div>
+          </div>
+          
+        </div>
+        <div class="modal-footer">
+          <button type="reset" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            Fechar
+          </button>
+          <button type="button" id="botao_emitir_nota_fiscal" class="btn btn-primary">Emitir</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

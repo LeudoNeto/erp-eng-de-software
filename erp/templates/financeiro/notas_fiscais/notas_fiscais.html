@@ -1,0 +1,63 @@
+{% extends 'navbar/navbar.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="card">
+  <div class="d-flex justify-content-between align-items-center w-100">
+    <h5 class="card-header">Histórico de Notas Fiscais</h5>
+    <button class="btn btn-primary me-4" data-bs-toggle="modal" data-bs-target="#modal_emitir_nota_fiscal">Emitir Nota Fiscal</button>
+  </div>
+  <div class="table-responsive text-nowrap">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Subtotal</th>
+          <th>IMCS</th>
+          <th>Total</th>
+          <th>Tipo</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody class="table-border-bottom-0">
+        {% for nota_fiscal in notas_fiscais %}
+          <tr>
+            <td>{{ nota_fiscal.cliente }}</td>
+            <td>{{ nota_fiscal.valor_total_produtos }}</td>
+            <td>{{ nota_fiscal.icms_total }}</td>
+            <td>{{ nota_fiscal.total }}</td>
+            <td>
+              {% if nota_fiscal.tipo == 'v' %}
+                Venda
+              {% elif nota_fiscal.tipo == 'p' %}
+                Serviço
+              {% endif %}
+            </td>
+            <td>
+              <div class="dropdown">
+                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                  <i class="bx bx-dots-vertical-rounded"></i>
+                </button>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" href="/financeiro/notas_fiscais/{{ nota_fiscal.id }}" target="_blank"
+                    ><i class="bx bx-printer me-1"></i>Imprimir</a
+                  >
+                </div>
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% include "financeiro/notas_fiscais/modal-emitir-nota-fiscal.html" %}
+{% include "financeiro/notas_fiscais/tabela-produtos-emitir-nota-fiscal.html" %}
+
+
+<script src="{% static "js/notas_fiscais/notas_fiscais.js" %}"></script>
+
+{% endblock content %}

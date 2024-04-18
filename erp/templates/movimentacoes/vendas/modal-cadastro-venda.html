@@ -1,0 +1,104 @@
+<!-- Modal -->
+
+<div class="modal fade modal-static" id="{% block id_modal %}modal_cadastro_venda{% endblock id_modal %}" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form id="{% block id_form %}form_cadastro_venda{% endblock id_form %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="{% block titulo_modal %}titulo_modal_cadastro{% endblock titulo_modal %}">Cadastrar Venda</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+
+          <div class="px-2 mb-3">
+            <label for="cliente" class="form-label">Cliente: *</label>
+            <input type="text" id="cliente" name="cliente" class="form-control" required />  
+          </div>
+          
+          <div class="row px-3">
+            <div class="col-6 px-2 row mb-3 me-2 mt-0 g-2">
+              <label for="produtos_vendidos" class="form-label">Produtos Vendidos:</label>
+              <button id="produtos_vendidos" type="button" data-bs-toggle="modal" data-bs-target="#tabela_produtos_cadastro_venda" class="btn btn-primary mt-0">Selecionar</button>
+            </div>
+
+            <div class="col-6 px-2 row mb-3 mt-0 g-2">
+              <label for="produtos_estoque_vendidos" class="form-label">Produtos Vendidos (do Estoque):</label>
+              <button id="produtos_estoque_vendidos" type="button" data-bs-toggle="modal" data-bs-target="#tabela_produtos_estoque_cadastro_venda" class="btn btn-primary mt-0">Selecionar</button>
+            </div>
+          </div>
+
+          <div class="px-2 mb-3">
+            <label for="subtotal" class="form-label">Subtotal:</label>
+            <div class="input-group">
+              <span class="input-group-text">R$</span>
+              <input type="text" disabled id="subtotal" value="0,00" class="form-control" style="text-align: right;" />  
+            </div>
+          </div>
+          <input type="hidden" id="valor_de_custo_dos_produtos">
+
+          <div class="row px-3">
+            <div class="col-6 px-2 mb-3">
+              <label for="desconto" class="form-label">Desconto:</label>
+              <div class="input-group">
+                <span class="input-group-text">R$</span>
+                <input type="text" id="desconto" name="desconto" value="0,00" class="form-control" style="text-align: right;" oninput="formatarMoeda(this)" />  
+              </div>
+            </div>
+
+            <div class="col-6 px-2 mb-3">
+              <label for="taxas" class="form-label">Taxas:</label>
+              <div class="input-group">
+                <span class="input-group-text">R$</span>
+                <input type="text" id="taxas" name="taxas" value="0,00" class="form-control" style="text-align: right;" oninput="formatarMoeda(this)" />  
+              </div>
+            </div>
+          </div>
+
+          <div class="px-2 mb-3">
+            <label for="metodo_pagamento" class="form-label">Forma de Pagamento: *</label>
+            <select name="metodo_pagamento" id="metodo_pagamento" class="form-select">
+              <option value="d">Dinheiro</option>
+              <option value="p">PIX</option>
+              <option value="d">Débito</option>
+              <option value="c">Crédito</option>
+            </select>  
+          </div>
+
+          <div class="px-2 mb-3">
+            <div class="form-check form-switch mb-3">
+              <input class="form-check-input" type="checkbox" id="remover_estoque">
+              <label class="form-check-label" for="remover_estoque">Remover produtos do Estoque</label>
+            </div>
+          </div>
+        
+          <div class="px-2 mb-3">
+            <div class="form-check form-switch mb-3">
+              <input class="form-check-input" type="checkbox" id="emitir_comprovante">
+              <label class="form-check-label" for="emitir_comprovante">Emitir Comprovante</label>
+            </div>
+          </div>
+
+          <div class="px-2 mb-3">
+            <div class="form-check form-switch mb-3">
+              <input class="form-check-input" type="checkbox" id="emitir_nota_fiscal">
+              <label class="form-check-label" for="emitir_nota_fiscal">Emitir Nota Fiscal</label>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="reset" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            Fechar
+          </button>
+          <button type="button" id="salvar_venda" class="btn btn-primary">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,69 @@
+{% extends 'navbar/navbar.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="card">
+  <div class="d-flex justify-content-between align-items-center w-100">
+    <h5 class="card-header">Vendas</h5>
+    <button class="btn btn-primary me-4" data-bs-toggle="modal" data-bs-target="#modal_cadastro_venda">Cadastrar Venda</button>
+  </div>
+  <div class="table-responsive text-nowrap">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Data</th>
+          <th>Valor Recebido</th>
+          <th>Tipo</th>
+          <th>Quantidade de Produtos</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody class="table-border-bottom-0">
+        {% for transacao in transacoes %}
+          <tr>
+            <td>{{ transacao.cliente }}</td>
+            <td>{{ transacao.data|date:"d/m/Y" }}</td>
+            <td>R$ {{ transacao.valor_total_recebido }}</td>
+            <td>
+              {% if transacao.tipo == 'v' %}
+                Venda
+              {% else %}
+                Serviço
+              {% endif %}
+            </td>
+            <td>
+              <button class="btn btn-sm btn-success" type="button"><i class="bx bx-up-arrow-alt me-1"></i>{{ transacao.produtos_saida }}</button>
+            </td>
+            <td>
+              <div class="dropdown">
+                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                  <i class="bx bx-dots-vertical-rounded"></i>
+                </button>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" href="#" data-id="{{ transacao.id }}" id="editar_movimentacao" data-bs-toggle="modal" data-bs-target="#modal_editar_produto"
+                    ><i class="bx bx-edit-alt me-1"></i>Editar</a
+                  >
+                  <a class="dropdown-item" href="#" data-id="{{ transacao.id }}" id="excluir_movimentacao"
+                    ><i class="bx bx-trash me-1"></i>Excluir</a
+                  >
+                </div>
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% include "movimentacoes/vendas/modal-cadastro-venda.html" %}
+{% include "movimentacoes/vendas/tabelas-produtos/tabela-produtos-cadastro.html" %}
+{% include "movimentacoes/vendas/tabelas-produtos/tabela-produtos-estoque-cadastro.html" %}
+
+
+<script src="{% static "js/movimentacoes/vendas.js" %}"></script>
+
+{% endblock content %}

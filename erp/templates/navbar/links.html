@@ -9,20 +9,25 @@
     </a>
   </li>
 
-  <li class="menu-item">
+  <li class="menu-item {% if menu_atual == 'administrativo' %} active open {% endif %}">
     <a href="javascript:void(0);" class="menu-link menu-toggle">
       <i class="menu-icon tf-icons bx bx-crown"></i>
       <div data-i18n="Layouts">Administrativo</div>
     </a>
 
     <ul class="menu-sub">
-      <li class="menu-item">
-        <a href="layouts-without-menu.html" class="menu-link">
+      <li class="menu-item {% if link_atual == 'gerenciar_funcionarios' %} active {% endif %}">
+        <a href="/funcionarios" class="menu-link">
           <div data-i18n="Without menu">Gerenciar funcionários</div>
         </a>
       </li>
+      <li class="menu-item {% if link_atual == 'gerenciar_cargos' %} active {% endif %}">
+        <a href="/cargos/" class="menu-link">
+          <div data-i18n="Without menu">Definir Cargos</div>
+        </a>
+      </li>
       <li class="menu-item">
-        <a href="layouts-without-navbar.html" class="menu-link">
+        <a href="/dados_empresa/" class="menu-link {% if link_atual == 'dados_empresa' %} active {% endif %}">
           <div data-i18n="Without navbar">Dados da Empresa</div>
         </a>
       </li>
@@ -30,11 +35,38 @@
   </li>
 
   <li class="menu-header small text-uppercase">
+    <span class="menu-header-text">Movimentações</span>
+  </li>
+
+  <li class="menu-item {% if link_atual == 'vendas' %} active {% endif %}">
+    <a href="/vendas/" class="menu-link">
+      <i class="menu-icon tf-icons bx bx-money"></i>
+      <div data-i18n="Vendas">Vendas</div>
+    </a>
+  </li>
+
+  <li class="menu-item {% if link_atual == 'compras' %} active {% endif %}">
+    <a href="/compras/" class="menu-link">
+      <i class="menu-icon tf-icons bx bx-cart"></i>
+      <div data-i18n="Compras">Compras</div>
+    </a>
+  </li>
+
+  <li class="menu-item {% if link_atual == 'historico_movimentacoes' %} active {% endif %}">
+    <a href="/movimentacoes/" class="menu-link">
+      <i class="menu-icon tf-icons bx bx-time"></i>
+      <div data-i18n="Histórico">Histórico</div>
+    </a>
+  </li>
+
+
+
+  <li class="menu-header small text-uppercase">
     <span class="menu-header-text">Estoque</span>
   </li>
 
-  <li class="menu-item">
-    <a href="#" class="menu-link">
+  <li class="menu-item {% if link_atual == 'estoque_visao_geral' %} active {% endif %}">
+    <a href="/estoque/" class="menu-link">
       <i class="menu-icon tf-icons bx bx-box"></i>
       <div data-i18n="Visão Geral">Visão Geral</div>
     </a>
@@ -47,44 +79,19 @@
     </a>
   </li>
 
-  <li class="menu-item">
-    <a href="javascript:void(0);" class="menu-link menu-toggle">
-      <i class="menu-icon tf-icons bx bx-transfer"></i>
-      <div data-i18n="Movimentações">Movimentações</div>
-    </a>
-
-    <ul class="menu-sub">
-      <li class="menu-item">
-        <a href="layouts-without-menu.html" class="menu-link">
-          <div data-i18n="Compras">Compras</div>
-        </a>
-      </li>
-      <li class="menu-item">
-        <a href="layouts-without-navbar.html" class="menu-link">
-          <div data-i18n="Vendas">Vendas</div>
-        </a>
-      </li>
-      <li class="menu-item">
-        <a href="layouts-without-navbar.html" class="menu-link">
-          <div data-i18n="Histórico">Histórico</div>
-        </a>
-      </li>
-    </ul>
-  </li>
-
   <li class="menu-header small text-uppercase">
     <span class="menu-header-text">Financeiro</span>
   </li>
 
   <li class="menu-item">
-    <a href="icons-boxicons.html" class="menu-link">
+    <a href="/financeiro/notas_fiscais/" class="menu-link">
       <i class="menu-icon tf-icons bx bx-qr-scan"></i>
       <div data-i18n="Emitir NF-e">Emitir NF-e</div>
     </a>
   </li>
 
   <li class="menu-item">
-    <a href="icons-boxicons.html" class="menu-link">
+    <a href="/financeiro/comprovantes" class="menu-link">
       <i class="menu-icon tf-icons bx bx-note"></i>
       <div data-i18n="Emitir Comprovante">Emitir Comprovante</div>
     </a>
@@ -95,8 +102,8 @@
     <span class="menu-header-text">Vidraçaria</span>
   </li>
 
-  <li class="menu-item">
-    <a href="icons-boxicons.html" class="menu-link">
+  <li class="menu-item {% if link_atual == 'desenho_do_projeto' %} active {% endif %}">
+    <a href="/desenho_do_projeto/" class="menu-link">
       <i class="menu-icon tf-icons bx bx-map-alt"></i>
       <div data-i18n="Desenho do Projeto">Desenho do Projeto</div>
     </a>

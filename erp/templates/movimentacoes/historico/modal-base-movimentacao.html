@@ -1,0 +1,89 @@
+<!-- Modal -->
+
+<div class="modal fade modal-static" id="{% block id_modal %}modal_cadastro_movimentacao{% endblock id_modal %}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form id="{% block id_form %}form_cadastro_movimentacao{% endblock id_form %}">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title" id="{% block titulo_modal %}titulo_modal_cadastro{% endblock titulo_modal %}">Cadastrar Movimentação</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+
+            <div class="row">
+              <div class="col-12 col-md-6">
+                <div class="px-2 mb-3">
+                  <label for="valor_recebido" class="form-label">Valor Total Recebido:</label>
+                  <div class="input-group">
+                    <span class="input-group-text">R$</span>
+                    <input type="text" id="valor_recebido" value="0,00" class="form-control" style="text-align: right;" oninput="formatarMoeda(this)" />  
+                  </div>
+                </div>
+
+                <div class="px-2 row mb-3 g-2">
+                  <label for="produtos_vendidos" class="form-label">Produtos Vendidos:</label>
+                  <button id="nome" type="button" data-bs-toggle="modal" data-bs-target="#modal_produtos_vendidos_cadastro" class="btn btn-primary mt-0">Selecionar</button>
+                </div>
+
+                <div class="px-2 mb-3">
+                  <label for="valor_recebido" class="form-label">Valor dos produtos Vendidos:</label>
+                  <div class="input-group">
+                    <span class="input-group-text">R$</span>
+                    <input type="text" disabled id="valor_produtos_vendidos" value="0,00" class="form-control" style="text-align: right;" />  
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="col-12 col-md-6">
+                <div class="px-2 mb-3">
+                  <label for="valor_pago" class="form-label">Valor Total Pago:</label>
+                  <div class="input-group">
+                    <span class="input-group-text">R$</span>
+                    <input type="text" id="valor_pago" value="0,00" class="form-control" style="text-align: right;" oninput="formatarMoeda(this)" />  
+                  </div>
+                </div>
+
+                <div class="px-2 row mb-3 g-2">
+                  <label for="produtos_comprados" class="form-label">Produtos Comprados:</label>
+                  <button id="nome" type="button" data-bs-toggle="modal" data-bs-target="#modal_produtos_comprados_cadastro" class="btn btn-primary mt-0">Selecionar</button>
+                </div>
+
+                <div class="px-2 mb-3">
+                  <label for="valor_recebido" class="form-label">Valor dos produtos Comprados:</label>
+                  <div class="input-group">
+                    <span class="input-group-text">R$</span>
+                    <input type="text" disabled id="valor_produtos_comprados" value="0,00" class="form-control" style="text-align: right;" />  
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+            <div class="px-2 mb-3">
+              <label for="lucro" class="form-label">Lucro:</label>
+              <div class="input-group">
+                <span class="input-group-text">R$</span>
+                <input type="text" disabled id="lucro" value="0,00" class="form-control" style="text-align: right;" />  
+              </div>
+            </div>
+            
+  
+          </div>
+          <div class="modal-footer">
+            <button type="reset" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+              Fechar
+            </button>
+            <button type="button" id="salvar_movimentacao" class="btn btn-primary">Salvar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>

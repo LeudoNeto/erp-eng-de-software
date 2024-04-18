@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nota Fiscal</title>
+
+    <style>
+      th, td {
+        border: 1px solid black;
+        padding: 2px;
+      }
+    </style>
+</head>
+<body>
+  <table>
+    <tr>
+      <td>Recebemos de: {{ nota_fiscal.empresa.nome }}</td>
+      <td style="text-align: center;">NF-E <br> <strong style="font-size: 16px;"> Nº {{ nota_fiscal.id }}</strong></td>
+    </tr>
+    <tr>
+      <td>Data de Emissão: <br><strong style="font-size: 16px;">{{ nota_fiscal.data_emissao|date:"d/m/Y" }}</strong></td>
+      <td style="padding-bottom: 16px;">Identificação e Assinatura do Recebedor</td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        Natureza da Operação <br>
+        {% if nota_fiscal.tipo == 'v' %}
+          VENDA
+        {% else %}
+          SERVIÇO
+        {% endif %}
+      </td>
+    </tr>
+  </table>
+  <br>
+  <strong>DESTINATÁRIO / REMETENTE</strong>
+  <table>
+    <tr>
+      <td>Nome / Razão Social <br> <span style="font-size: 16px;">{{ nota_fiscal.cliente }}</span></td>
+    </tr>
+    <tr>
+      <td>Endereço <br> <span style="font-size: 16px;">{{ nota_fiscal.cliente_endereco }}</span></td>
+    </tr>
+  </table>
+
+  <br>
+  <strong>CÁLCULO DO IMPOSTO</strong>
+
+  <table>
+    <tr>
+      <td>
+        <strong>BASE DO CÁLCULO DO ICMS</strong> <br>
+        <div style="text-align: right;">
+          <span style="font-size: 16px;">R$ {{ nota_fiscal.valor_total_produtos }}</span>
+        </div>
+      </td>
+      <td>
+        <strong>VALOR DO ICMS</strong> <br>
+        <div style="text-align: right;">
+          <span style="font-size: 16px;">R$ {{ nota_fiscal.icms_total }}</span>
+        </div>
+      </td>
+      <td>
+        <strong>VALOR TOTAL DOS PRODUTOS</strong> <br>
+        <div style="text-align: right;">
+          <span style="font-size: 16px;">R$ {{ nota_fiscal.valor_total_produtos }}</span>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <strong>TAXAS DA LOJA</strong> <br>
+        <div style="text-align: right;">
+          <span style="font-size: 16px;">R$ {{ nota_fiscal.taxas }}</span>
+        </div>
+      </td>
+      <td>
+        <strong>VALOR TOTAL DA NOTA</strong> <br>
+        <div style="text-align: right;">
+          <strong><span style="font-size: 16px;">R$ {{ nota_fiscal.total }}</span></strong>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <br>
+  <strong>DADOS DOS PRODUTOS / SERVIÇOS</strong>
+
+  <table>
+    <thead>
+      <tr>
+        <th>CÓDIGO</th>
+        <th>DESCRIÇÃO DOS PRODUTOS / SERVIÇOS</th>
+        <th>REF.</th>
+        <th>QUANT.</th>
+        <th>VALOR UNITÁRIO</th>
+        <th>VALOR TOTAL</th>
+        <th>ICMS</th>
+        <th>ALÍQUOTA</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for produto_nf in nota_fiscal_produtos %}
+        <tr>
+          <td>{{ produto_nf.id }}</td>
+          <td>{{ produto_nf.produto__nome }}</td>
+          <td>{{ produto_nf.produto__codigo_referencia }}</td>
+          <td>{{ produto_nf.quantidade }}</td>
+          <td>{{ produto_nf.valor_unitario }}</td>
+          <td>{{ produto_nf.valor_total }}</td>
+          <td>{{ produto_nf.valor_icms }}</td>
+          <td>{{ produto_nf.produto__aliquota_icms }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+
+    
+</body>
+</html>

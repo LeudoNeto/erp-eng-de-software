@@ -1,0 +1,362 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprovante</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <section id="invoice">
+        <div class="container">
+            <div class="text-center">
+                {% comment %} <img src="images/logo_dark.png" alt=""> {% endcomment %}
+            </div>
+            <div class="text-center my-5 py-3">
+                <h2 class="display-5 fw-bold">Comprovante de Venda</h2>
+                <p class="m-0">Comprovante nº: {{ comprovante.id }}</p>
+                <p class="m-0">Data de Emissão: {{ comprovante.data_emissao|date:"d/m/Y" }}</p>
+            </div>
+
+            <table>
+                <tr>
+                    <td>
+                        <h1 class="text-primary mb-1">Comprador</h1>
+                        <h4 class="m-0">{{ comprovante.cliente }}</h4>
+                        <span>Nome da Empresa do Cliente</span><br>
+                        <span>info@xyzcompany.com</span><br>
+                        <span>Endereço</span>
+                    </td>
+                    <td style="text-align: right;">
+                        <h1 class="text-primary mb-1">De</h1>
+                        <h4 class="m-0">{{ comprovante.vendedor.nome }}</h4>
+                        <span>{{ comprovante.empresa.nome }}</span><br>
+                        <span>{{ comprovante.empresa.email }}</span><br>
+                        <span>{{ comprovante.empresa.endereco }}</span>
+                    </td>
+                </tr>
+            </table>
+
+            <table class="table border my-5">
+                <thead>
+                    <tr class="bg-primary-subtle">
+                        <th scope="col">No.</th>
+                        <th scope="col">Produto</th>
+                        <th scope="col">Preço Unitário</th>
+                        <th scope="col">Quantidade</th>
+                        <th scope="col">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for produto in produtos_comprovante %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ produto.produto.nome }}</td>
+                        <td>R$ {{ produto.valor_unitario }}</td>
+                        <td>{{ produto.quantidade }}</td>
+                        <td>R$ {{ produto.valor_total }}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td> </td> <td> </td> <td> </td>
+                        <th>Subtotal: </th>
+                        <td>R$ {{ comprovante.subtotal }}</td>
+                    </tr>
+                    <tr>
+                        <td> </td> <td> </td> <td> </td>
+                        <th>Taxas: </th>
+                        <td>R$ {{ comprovante.taxas }}</td>
+                    </tr>
+                    <tr>
+                        <td> </td> <td> </td> <td> </td>
+                        <th>Desconto: </th>
+                        <td>R$ {{ comprovante.desconto }}</td>
+                    </tr>
+                    <tr>
+                        <td> </td> <td> </td> <td> </td>
+                        <th>Total: </th>
+                        <td>R$ {{ comprovante.total }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table>
+                <tr>
+                    <td>
+                        <h1 class="text-primary mb-1">Contato</h1>
+                        <span>{{ comprovante.empresa.endereco }}</span><br>
+                        <span>{{ comprovante.empresa.telefone }}</span><br>
+                        <span>{{ comprovante.empresa.email }}</span>
+                    </td>
+                    <td style="text-align: right;">
+                        <h1 class="text-primary mb-1">Método de Pagamento</h1>
+                        <span class="fw-semibold">
+                            {% if comprovante.metodo_pagamento == 'd' %}
+                                Dinheiro
+                            {% elif comprovante.metodo_pagamento == 'p' %}
+                                PIX
+                            {% elif comprovante.metodo_pagamento == 'd' %}
+                                Débito
+                            {% else %}
+                                Crédito
+                            {% endif %}
+                        </span>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    </section>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+        crossorigin="anonymous"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+
+</body>
+
+<style>
+    /* Reset de margens e preenchimentos */
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
+
+    /* Grid */
+    .container {
+        max-width: 1140px;
+        width: 100%;
+        padding-right: 15px;
+        padding-left: 15px;
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    /* Tipografia */
+    body {
+        font-family: 'Poppins', sans-serif;
+    }
+
+    h2 {
+        font-size: 2.5rem;
+        font-weight: bold;
+    }
+
+    h4 {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .display-5 {
+        font-size: 1.25rem;
+        font-weight: bold;
+    }
+
+    .lead {
+        font-size: 1.25rem;
+    }
+
+    /* Cores */
+    .text-primary {
+        color: #0070E4;
+    }
+
+    .bg-primary-subtle {
+        background-color: #cfe2ff;
+    }
+
+    .text-muted {
+        color: #6c757d;
+    }
+
+    .text-black-50 {
+        color: rgba(0, 0, 0, 0.5);
+    }
+
+    .m-0 {
+        margin: 0;
+    }
+
+    .mb-1 {
+        margin-bottom: 0.25rem;
+    }
+
+    /* Margens e preenchimentos */
+    .my-5 {
+        margin-top: 3rem;
+        margin-bottom: 3rem;
+    }
+
+    .py-5 {
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+    }
+
+    .mt-5 {
+        margin-top: 3rem;
+    }
+
+    .mb-5 {
+        margin-bottom: 3rem;
+    }
+
+    .mt-md-0 {
+        margin-top: 0;
+    }
+
+    .my-4 {
+        margin-top: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Borda */
+    .border {
+        border: 1px solid #dee2e6;
+    }
+
+    .border-top {
+        border-top: 1px solid #dee2e6;
+    }
+
+    .border-bottom {
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    /* Lista sem marcadores */
+    .list-unstyled {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    thead,
+    tbody,
+    tfoot,
+    tr,
+    td,
+    th {
+        border-color: inherit;
+        border-style: solid;
+        border-width: 0;
+        text-align: left;
+    }
+
+    /* Tabela */
+    .table {
+        width: 100%;
+        margin-bottom: 1rem;
+        color: #212529;
+        border-spacing: 0;
+    }
+
+    .table-bordered {
+        border: 1px solid #dee2e6;
+    }
+
+    .table th,
+    .table td {
+        padding: 0.75rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+    }
+
+    .table thead th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .table tbody + tbody {
+        border-top: 2px solid #dee2e6;
+    }
+
+    /* Corpo da tabela */
+    tbody {
+        color: #495057;
+    }
+
+    /* Rodapé da tabela */
+    .table-footer {
+        border-top: 2px solid #dee2e6;
+    }
+
+    /* Centralizar */
+    .text-center {
+        text-align: center;
+    }
+
+    /* Imagens */
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    /* Ícones */
+    .social-icon {
+        vertical-align: text-bottom;
+    }
+
+    /* Links */
+    .text-decoration-none {
+        text-decoration: none !important;
+    }
+
+    d-flex {
+        display: -ms-flexbox !important;
+        display: flex !important;
+    }
+
+    .justify-content-between {
+        justify-content: space-between !important;
+    }
+
+    .text-md-end {
+        text-align: end !important;
+    }
+
+    /* Footer */
+    #footer-bottom {
+        margin-top: 3rem;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        background-color: #f8f9fa;
+    }
+
+    .copyright {
+        margin-bottom: 0;
+    }
+</style>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+
+<style>
+    :root {
+        --body-font: 'Poppins', sans-serif;
+    }
+    
+    /* Bootstrap Override */
+    body {
+        --bs-font-sans-serif: 'Poppins', sans-serif;
+        --bs-body-font-family: var(--bs-font-sans-serif);
+        --bs-body-font-size: 1rem;
+        --bs-body-font-weight: 400;
+        --bs-body-line-height: 2;
+        --bs-body-color: #41403E;
+        --bs-primary: #0070E4;
+        --bs-primary-rgb: 0, 112, 228;
+        --bs-border-color: #eeeeee;
+    }
+</style>
+
+</html>
+

@@ -1,7 +1,7 @@
 <!-- Modal -->
 
 <div class="modal fade modal-static" id="modal_editar_produto" tabindex="-1" aria-hidden="true">
-  <div class="modal-aumentado modal-dialog" role="document">
+  <div class="modal-dialog" role="document">
     <div class="modal-content">
       <form id="form_editar_produto">
         {% csrf_token %}
@@ -44,6 +44,14 @@
                 <span class="input-group-text">R$</span>
                 <input type="text" id="valor_venda_padrao" name="valor_venda_padrao" class="form-control" style="text-align: right;" oninput="formatarMoeda(this)" />  
               </div>
+            </div>
+          </div>
+
+          <div class="row mb-3 g-2">
+            <label for="aliquota_icms" class="form-label">Alíquota ICMS:</label>
+            <div class="input-group">
+              <input type="text" id="aliquota_icms" name="aliquota_icms" class="form-control" oninput="formatarICMS(this)" />
+              <span class="input-group-text">%</span>
             </div>
           </div>
 

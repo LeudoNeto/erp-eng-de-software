@@ -77,6 +77,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         form_editar_produto.querySelector('#codigo_referencia').value = data.codigo_referencia;
                         form_editar_produto.querySelector('#valor_custo_padrao').value = data.valor_custo_padrao;
                         form_editar_produto.querySelector('#valor_venda_padrao').value = data.valor_venda_padrao;
+                        form_editar_produto.querySelector('#aliquota_icms').value = data.aliquota_icms;
                         swal.close();
                         salvar_editar_produto.dataset.id = produto_id;
                     });
@@ -123,11 +124,20 @@ document.addEventListener("DOMContentLoaded", function() {
             }).then((result) => {
                 let produto_id = salvar_editar_produto.dataset.id;
                 let formData = new FormData(form_editar_produto);
+                let jsonForm = {};
+
+                formData.forEach((value, key) => {
+                    jsonForm[key] = value;
+                });
 
                 if (result.isConfirmed) {
                     fetch(`/api/produtos/${produto_id}/`, {
                         method: "PUT",
-                        body: formData
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRFToken": jsonForm.csrfmiddlewaretoken
+                        },
+                        body: JSON.stringify(jsonForm)
                     })
                     .then(response => {
                         if (response.ok) {
@@ -206,7 +216,14 @@ function formatarMoeda(input) {
     valor = valor.replace(/\D/g, '');
     valor = (valor / 100).toLocaleString('pt-BR', {minimumFractionDigits: 2});
     input.value = valor;
-  }
+}
+
+function formatarICMS(input) {
+    let valor = input.value;
+    valor = valor.replace(/\D/g, '');
+    valor = (valor / 10).toLocaleString('pt-BR', {minimumFractionDigits: 1});
+    input.value = valor;
+}
 
 function preview(editar=false) {
     if (editar) {

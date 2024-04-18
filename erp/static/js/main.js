@@ -94,6 +94,18 @@ let menu, animate;
     accordionTriggerEl.addEventListener('hide.bs.collapse', accordionActiveFunction);
   });
 
+  // logout
+  let logout = document.querySelector('#botao_logout');
+  logout.addEventListener('click', function () {
+    fetch('/api/login/logout/', {
+      method: 'GET'
+    }).then(response => {
+      if (response.ok) {
+        window.location.href = '/login/';
+      }
+    });
+  });
+
   // Auto update layout based on screen size
   window.Helpers.setAutoUpdate(true);
 

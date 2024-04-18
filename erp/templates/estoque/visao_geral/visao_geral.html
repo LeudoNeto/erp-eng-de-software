@@ -1,0 +1,65 @@
+{% extends 'navbar/navbar.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="card">
+  <div class="d-flex justify-content-between align-items-center w-100">
+    <h5 class="card-header">Estoque</h5>
+    <button class="btn btn-primary me-4" data-bs-toggle="modal" data-bs-target="#modal_adicionar_produto">Adicionar Produto</button>
+  </div>
+  <div class="table-responsive text-nowrap">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Produto</th>
+          <th>Quantidade</th>
+          <th>Descrição</th>
+          <th>Valor Custo</th>
+          <th>Valor Venda</th>
+          <th>Localização</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody class="table-border-bottom-0">
+        {% for produto_estoque in produtos_estoque %}
+          <tr>
+            <td>
+              {% if produto_estoque.produto__foto %}
+                <img src="{{ MEDIA_URL }}{{ produto_estoque.produto__foto }}" height="30px" width="30px" class="rounded-circle me-2" />
+              {% endif %}
+              <strong>{{ produto_estoque.produto__nome }}</strong>
+            </td>
+            <td>{{ produto_estoque.quantidade }}</td>
+            <td>{% if produto_estoque.descricao %} {{ produto_estoque.descricao }} {% endif %}</td>
+            <td>{% if produto_estoque.valor_custo %} R$ {{ produto_estoque.valor_custo }} {% endif %}</td>
+            <td>{% if produto_estoque.valor_venda %} R$ {{ produto_estoque.valor_venda }} {% endif %}</td>
+            <td>{% if produto_estoque.localizacao %}{{ produto_estoque.localizacao|truncatechars:13 }} {% endif %}</td>
+            <td>
+              <div class="dropdown">
+                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                  <i class="bx bx-dots-vertical-rounded"></i>
+                </button>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" href="#" data-id="{{ produto.id }}" id="editar_produto" data-bs-toggle="modal" data-bs-target="#modal_editar_produto"
+                    ><i class="bx bx-edit-alt me-1"></i>Editar</a
+                  >
+                  <a class="dropdown-item" href="#" data-id="{{ produto.id }}" id="excluir_produto"
+                    ><i class="bx bx-folder-minus me-1"></i>Remover</a
+                  >
+                </div>
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% include "estoque/visao_geral/modal-adicionar-produto-estoque.html" %}
+
+<script src="{% static "js/estoque/visao_geral.js" %}"></script>
+
+{% endblock content %}

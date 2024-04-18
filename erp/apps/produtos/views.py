@@ -11,6 +11,6 @@ class ProdutosView(ErpTemplateView):
         context['title'] = 'Produtos'
         context['link_atual'] = 'produtos'
 
-        context['produtos'] = produto.objects.all()
+        context['produtos'] = produto.objects.filter(empresa=self.request.user.empresa)
 
         return context

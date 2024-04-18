@@ -1,0 +1,45 @@
+{% extends 'navbar/navbar.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<style>
+    .cargo {
+        width: 300px;
+        margin: 10px;
+    }
+</style>
+
+<div class="row"> 
+    {% for cargo in cargos %}
+        <div class="card cargo p-0">
+            <h5 class="card-header pb-3">{{ cargo.nome }}</h5>
+            <div class="card-body d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                    <p class="card-text pb-3">{{ cargo.descricao }}</p>
+                </div>
+                <div class="d-flex justify-content-end mt-auto">
+                    <button class="btn btn-warning me-2" data-bs-toggle="modal" data-bs-target="#modal_editar_cargo" data-id="{{ cargo.id }}">
+                        <i class="tf-icons bx bx-edit"></i>
+                    </button>
+                    <button class="btn btn-danger" data-id="{{ cargo.id }}" id="excluir_cargo">
+                        <i class="tf-icons bx bx-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    <a href="#" class="card cargo" data-bs-toggle="modal" data-bs-target="#modal_criar_cargo">
+        <div class="d-flex justify-content-center align-items-center flex-column h-100">
+            <i class="tf-icons bx bx-plus-circle pb-3" style="font-size: 50px; color: #6c757d;"></i>
+            <h5 class="card-header p-0">Criar cargo</h5>
+        </div>
+    </a>
+</div>
+
+{% include "administrativo/gerenciar_cargos/modal-criar-cargo.html" %}
+
+<script src="{% static "js/administrativo/gerenciar_cargos.js" %}"></script>
+
+{% endblock content %}
