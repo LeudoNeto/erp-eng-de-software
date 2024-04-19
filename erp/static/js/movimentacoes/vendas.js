@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
     var form_cadastro_venda = document.querySelector("#form_cadastro_venda");
     var salvar_venda = modal_cadastro_venda.querySelector("#salvar_venda");
 
-    var excluir_movimentacao_buttons = document.querySelectorAll("#excluir_movimentacao")
+    var excluir_venda_buttons = document.querySelectorAll("#excluir_venda")
 
     const csrf_token = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
@@ -12,6 +12,22 @@ document.addEventListener("DOMContentLoaded", function() {
             title: "Verificando campos obrigatórios",
             icon: "info"
         })
+
+        if (!modal_cadastro_venda.querySelector("#cliente_endereco").value && modal_cadastro_venda.querySelector('#emitir_nota_fiscal').checked) {
+            swal.fire({
+                title: "Para emitir NF é necessário informar o endereço do cliente.",
+                icon: "error"
+            });
+            return;
+        }
+
+        if (!modal_cadastro_venda.querySelector("#vendedor").value && modal_cadastro_venda.querySelector('#emitir_comprovante').checked) {
+            swal.fire({
+                title: "Para emitir comprovante é necessário informar o vendedor.",
+                icon: "error"
+            });
+            return;
+        }
 
         if (form_cadastro_venda.checkValidity()) {
             swal.fire({
@@ -23,14 +39,16 @@ document.addEventListener("DOMContentLoaded", function() {
                 cancelButtonText: "Cancelar"
             }).then((result) => {
                 let cliente = modal_cadastro_venda.querySelector("#cliente").value;
+                let cliente_endereco = modal_cadastro_venda.querySelector("#cliente_endereco").value;
+                let vendedor = modal_cadastro_venda.querySelector("#vendedor").value;
                 let metodo_pagamento = modal_cadastro_venda.querySelector("#metodo_pagamento").value;
                 let valor_de_venda_dos_produtos = modal_cadastro_venda.querySelector("#subtotal").value.replace(/\D/g, '')/100;
                 let valor_de_custo_dos_produtos = modal_cadastro_venda.querySelector("#valor_de_custo_dos_produtos").value.replace(/\D/g, '')/100;
                 let taxas = modal_cadastro_venda.querySelector("#taxas").value.replace(/\D/g, '')/100;
                 let desconto = modal_cadastro_venda.querySelector("#desconto").value.replace(/\D/g, '')/100;
-                let valor_total_pago = valor_de_custo_dos_produtos;
-                let valor_total_recebido = valor_de_venda_dos_produtos + taxas - desconto;
-                let lucro = valor_total_recebido - valor_total_pago;
+                let valor_total_pago = valor_de_custo_dos_produtos.toFixed(2);
+                let valor_total_recebido = (valor_de_venda_dos_produtos + taxas - desconto).toFixed(2);
+                let lucro = (valor_total_recebido - valor_total_pago).toFixed(2);
 
                 let tipo;
                 let produtos_transacao = [];
@@ -72,6 +90,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 let movimentacao = {
                     cliente,
+                    cliente_endereco,
+                    vendedor,
                     valor_total_recebido,
                     valor_total_pago,
                     valor_de_venda_dos_produtos,
@@ -108,6 +128,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                         showConfirmButton: false,
                                         allowOutsideClick: false
                                     })
+                                    let venda_id = data.venda_id;
                                     fetch(`/api/vendas/${data.venda_id}/comprovante_da_venda/`, {
                                         headers: {
                                             "X-CSRFToken": csrf_token,
@@ -116,23 +137,78 @@ document.addEventListener("DOMContentLoaded", function() {
                                     })
                                     .then(response => {
                                         if (response.ok) {
-                                            swal.fire({
-                                                title: "Comprovante emitido com sucesso!",
-                                                text: "Deseja imprimir o comprovante?",
-                                                icon: "success",
-                                                showCancelButton: true,
-                                                confirmButtonText: "Imprimir",
-                                                cancelButtonText: "Fechar"
-                                            })
-                                            .then(res => {
-                                                if (res.isConfirmed) {
-                                                    return response.json().then(data => {
-                                                        window.open("/financeiro/comprovantes/"+data.comprovante, "_blank");
-                                                        window.location.reload();
+                                            if (movimentacao["emitir_nota_fiscal"]) {
+                                                return response.json().then(data => {
+                                                    let comprovante_id = data.comprovante;
+                                                    fetch(`/api/vendas/${venda_id}/nota_fiscal_da_venda/`, {
+                                                        headers: {
+                                                            "X-CSRFToken": csrf_token,
+                                                        },
+                                                        method: "POST"
                                                     })
-                                                }
-                                                window.location.reload();
-                                            })
+                                                    .then(response => {
+                                                        if (response.ok) {
+                                                            return response.json().then(data => {
+                                                                swal.fire({
+                                                                    title: "Comprovante e nota fiscal emitidos com sucesso!",
+                                                                    text: "Deseja imprimir o comprovante?",
+                                                                    icon: "success",
+                                                                    showCancelButton: true,
+                                                                    confirmButtonText: "Imprimir",
+                                                                    cancelButtonText: "Fechar"
+                                                                })
+                                                                .then(res => {
+                                                                    if (res.isConfirmed) {
+                                                                        window.open("/financeiro/comprovantes/"+comprovante_id, "_blank");
+                                                                    }
+                                                                    swal.fire({
+                                                                        title: "Comprovante impresso!",
+                                                                        text: "Deseja imprimir a nota fiscal?",
+                                                                        icon: "success",
+                                                                        showCancelButton: true,
+                                                                        confirmButtonText: "Imprimir",
+                                                                        cancelButtonText: "Fechar"
+                                                                    })
+                                                                    .then(res => {
+                                                                        if (res.isConfirmed) {
+                                                                            window.open("/financeiro/notas_fiscais/"+data.nota_fiscal, "_blank");
+                                                                        }
+                                                                        window.location.reload();
+                                                                    })
+                                                                })
+                                                            })
+                                                        }
+                                                        else {
+                                                            return response.json().then(data => {
+                                                                swal.fire({
+                                                                    title: data.erro,
+                                                                    text: data.detalhes,
+                                                                    icon: "error"
+                                                                });
+                                                            });
+                                                        }
+                                                    });
+                                                });
+                                            }
+                                            else {
+                                                swal.fire({
+                                                    title: "Comprovante emitido com sucesso!",
+                                                    text: "Deseja imprimir o comprovante?",
+                                                    icon: "success",
+                                                    showCancelButton: true,
+                                                    confirmButtonText: "Imprimir",
+                                                    cancelButtonText: "Fechar"
+                                                })
+                                                .then(res => {
+                                                    if (res.isConfirmed) {
+                                                        return response.json().then(data => {
+                                                            window.open("/financeiro/comprovantes/"+data.comprovante, "_blank");
+                                                            window.location.reload();
+                                                        })
+                                                    }
+                                                    window.location.reload();
+                                                })
+                                            }
                                         }
                                         else {
                                             return response.json().then(data => {
@@ -147,12 +223,62 @@ document.addEventListener("DOMContentLoaded", function() {
                                 });
                             }
                             else {
-                                swal.fire({
-                                    title: "Venda salva com sucesso!",
-                                    icon: "success"
-                                }).then(() => {
-                                    window.location.reload();
-                                });
+                                if (movimentacao["emitir_nota_fiscal"]) {
+                                    return response.json().then(data => {
+                                        swal.fire({
+                                            title: "Venda salva com sucesso!",
+                                            text: "Emitindo comprovante...",
+                                            icon: "info",
+                                            showConfirmButton: false,
+                                            allowOutsideClick: false
+                                        })
+    
+                                        fetch(`/api/vendas/${data.venda_id}/nota_fiscal_da_venda/`, {
+                                            headers: {
+                                                "X-CSRFToken": csrf_token,
+                                            },
+                                            method: "POST"
+                                        })
+                                        .then(response => {
+                                            if (response.ok) {
+                                                return response.json().then(data => {
+                                                    swal.fire({
+                                                        title: "Nota fiscal emitida com sucesso!",
+                                                        text: "Deseja imprimir a nota fiscal?",
+                                                        icon: "success",
+                                                        showCancelButton: true,
+                                                        confirmButtonText: "Imprimir",
+                                                        cancelButtonText: "Fechar"
+                                                    })
+                                                    .then(res => {
+                                                        if (res.isConfirmed) {
+                                                            window.open("/financeiro/notas_fiscais/"+data.nota_fiscal, "_blank");
+                                                            window.location.reload();
+                                                        }
+                                                        window.location.reload();
+                                                    })
+                                                })
+                                            }
+                                            else {
+                                                return response.json().then(data => {
+                                                    swal.fire({
+                                                        title: data.erro,
+                                                        text: data.detalhes,
+                                                        icon: "error"
+                                                    });
+                                                });
+                                            }
+                                        });
+                                    });
+                                }
+                                else {
+                                    swal.fire({
+                                        title: "Venda salva com sucesso!",
+                                        icon: "success"
+                                    }).then(() => {
+                                        window.location.reload();
+                                    });
+                                }
                             }
                         }
                         else {
@@ -175,24 +301,27 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    excluir_movimentacao_buttons.forEach(button => {
+    excluir_venda_buttons.forEach(button => {
         button.addEventListener('click', function() {
             let movimentacao_id = button.getAttribute('data-id');
             swal.fire({
-                title: "Tem certeza que deseja excluir a movimentação?",
+                title: "Tem certeza que deseja excluir a venda?",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonText: "Confirmar",
                 cancelButtonText: "Cancelar"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    fetch("/api/movimentacoes/" + movimentacao_id, {
-                        method: "DELETE"
+                    fetch(`/api/movimentacoes/${movimentacao_id}/`, {
+                        method: "DELETE",
+                        headers: {
+                            "X-CSRFToken": csrf_token,
+                        }
                     })
                     .then(response => {
                         if (response.ok) {
                             swal.fire({
-                                title: "Movimentação excluída com sucesso!",
+                                title: "Venda excluída com sucesso!",
                                 icon: "success"
                             }).then(() => {
                                 button.closest('tr').remove();

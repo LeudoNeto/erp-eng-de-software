@@ -8,6 +8,7 @@
     .cargo {
         width: 300px;
         margin: 10px;
+        min-height: 120px;
     }
 </style>
 
@@ -20,7 +21,7 @@
                     <p class="card-text pb-3">{{ cargo.descricao }}</p>
                 </div>
                 <div class="d-flex justify-content-end mt-auto">
-                    <button class="btn btn-warning me-2" data-bs-toggle="modal" data-bs-target="#modal_editar_cargo" data-id="{{ cargo.id }}">
+                    <button class="btn btn-warning me-2" data-bs-toggle="modal" data-bs-target="#modal_editar_cargo" data-id="{{ cargo.id }}" id="editar_cargo">
                         <i class="tf-icons bx bx-edit"></i>
                     </button>
                     <button class="btn btn-danger" data-id="{{ cargo.id }}" id="excluir_cargo">
@@ -39,6 +40,7 @@
 </div>
 
 {% include "administrativo/gerenciar_cargos/modal-criar-cargo.html" %}
+{% include "administrativo/gerenciar_cargos/modal-editar-cargo.html" %}
 
 <script src="{% static "js/administrativo/gerenciar_cargos.js" %}"></script>
 

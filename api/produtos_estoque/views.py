@@ -49,6 +49,7 @@ class ProdutoEstoqueViewSet(viewsets.ViewSet):
         try:
             prod = produto_estoque.objects.get(pk=pk)
             data = request.data.copy()
+            data['empresa'] = request.user.empresa.id
 
             if 'valor_custo' in data:
                 data['valor_custo'] = data['valor_custo'].replace('.', '').replace(',', '.')

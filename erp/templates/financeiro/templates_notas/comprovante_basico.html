@@ -59,7 +59,7 @@
                     {% for produto in produtos_comprovante %}
                     <tr>
                         <th scope="row">{{ forloop.counter }}</th>
-                        <td>{{ produto.produto.nome }}</td>
+                        <td>{{ produto.produto__nome }}</td>
                         <td>R$ {{ produto.valor_unitario }}</td>
                         <td>{{ produto.quantidade }}</td>
                         <td>R$ {{ produto.valor_total }}</td>

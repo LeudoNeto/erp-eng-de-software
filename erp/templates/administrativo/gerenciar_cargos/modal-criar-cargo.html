@@ -1,12 +1,12 @@
 <!-- Modal -->
 
-<div class="modal fade modal-static" id="modal_criar_cargo" tabindex="-1" aria-hidden="true">
+<div class="modal fade modal-static" id="{% block id_modal %}modal_criar_cargo{% endblock id_modal %}" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <form id="form_criar_cargo">
+      <form id="{% block id_form %}form_criar_cargo{% endblock id_form %}">
         {% csrf_token %}
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel1">Criar Cargo</h5>
+          <h5 class="modal-title" id="exampleModalLabel1">{% block titulo_modal %}Criar Cargo{% endblock titulo_modal %}</h5>
           <button
             type="button"
             class="btn-close"
@@ -45,7 +45,7 @@
           <button type="reset" class="btn btn-outline-secondary" data-bs-dismiss="modal">
             Fechar
           </button>
-          <button type="button" id="salvar_cargo" class="btn btn-primary">Salvar</button>
+          <button type="button" id="{% block id_salvar %}salvar_cargo{% endblock id_salvar %}" class="btn btn-primary">Salvar</button>
         </div>
       </form>
     </div>

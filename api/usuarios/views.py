@@ -18,6 +18,7 @@ class UsuarioViewSet(viewsets.ViewSet):
                 return Response({'erro': 'Nome, e-mail, telefone, cargo e senha são obrigatórios.'}, status=status.HTTP_400_BAD_REQUEST)
             
             data["empresa"] = request.user.empresa_id
+            data["is_active"] = True
 
             serializer = UsuarioSerializer(data=data)
             if not serializer.is_valid():

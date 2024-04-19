@@ -106,6 +106,15 @@ let menu, animate;
     });
   });
 
+  // init select2
+  let select2 = document.querySelectorAll('.select2');
+  select2.forEach(function (element) {
+    console.log(element);
+    $(element).select2({
+      dropdownParent: element.dataset.dropdownParent ? $(element.dataset.dropdownParent) : null
+    });
+  });
+
   // Auto update layout based on screen size
   window.Helpers.setAutoUpdate(true);
 

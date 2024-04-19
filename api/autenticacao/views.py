@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework import viewsets
 
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout as django_logout
 
 from .models import Cargo
 from api.usuarios.models import usuario
@@ -34,11 +34,22 @@ class LoginViewSet(viewsets.ViewSet):
         
     @action(detail=False, methods=['get'])
     def logout(self, request):
-        logout(request)
+        django_logout(request)
         return Response({'sucesso': 'Usuário deslogado com sucesso'}, status=status.HTTP_200_OK)
 
 
 class CargoViewSet(viewsets.ViewSet):
+
+    def retrieve(self, request, pk=None):
+        try:
+            cargo = Cargo.objects.filter(empresa=request.user.empresa, id=pk).first()
+            if not cargo:
+                return Response({'erro': 'Cargo não encontrado'}, status=status.HTTP_404_NOT_FOUND)
+            
+            serializer = CargoSerializer(cargo)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'erro': 'Erro ao buscar cargo', 'detalhes': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def create(self, request):
         try:
@@ -57,6 +68,25 @@ class CargoViewSet(viewsets.ViewSet):
             return Response({'sucesso': 'Cargo criado com sucesso'}, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({'erro': 'Erro ao criar cargo', 'detalhes': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def update(self, request, pk=None):
+        try:
+            cargo = Cargo.objects.filter(empresa=request.user.empresa, id=pk).first()
+            if not cargo:
+                return Response({'erro': 'Cargo não encontrado'}, status=status.HTTP_404_NOT_FOUND)
+            
+            data = request.data.copy()
+
+            data["empresa"] = request.user.empresa_id
+            
+            serializer = CargoSerializer(cargo, data=data)
+            if not serializer.is_valid():
+                return Response({'erro': 'Erro ao atualizar cargo', 'detalhes': str(serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
+            
+            serializer.save()
+            return Response({'sucesso': 'Cargo atualizado com sucesso'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'erro': 'Erro ao atualizar cargo', 'detalhes': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def destroy(self, request, pk=None):
         try:

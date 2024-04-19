@@ -105,9 +105,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 cancelButtonText: "Cancelar"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    fetch("/api/comprovantes/" + comprovante_id, {
+                    fetch(`/api/comprovantes/${comprovante_id}/`, {
                         headers: {
-                            "Content-Type": "application/json",
                             "X-CSRFToken": csrf_token
                         },
                         method: "DELETE"

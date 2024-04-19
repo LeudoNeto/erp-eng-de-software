@@ -3,6 +3,7 @@ from erp.views import ErpTemplateView
 from api.movimentacoes.models import transacao, produto_transacao
 from api.produtos.models import produto
 from api.produtos_estoque.models import produto_estoque
+from api.usuarios.models import usuario
 
 import locale
 locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
@@ -28,5 +29,7 @@ class VendasView(ErpTemplateView):
         context['produtos_estoque'] = produto_estoque.objects.filter(empresa=self.request.user.empresa).values(
             "id", "produto_id", "produto__nome", "produto__foto", "quantidade", "valor_custo", "valor_venda", "localizacao"
         )
+
+        context['vendedores'] = usuario.objects.filter(empresa=self.request.user.empresa)
 
         return context

@@ -13,6 +13,8 @@ class ErpTemplateView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         context["MEDIA_URL"] = MEDIA_URL
+        context["usuario"] = self.request.user
+        context["usuario_nivel_acesso"] = self.request.user.cargo.nivel_acesso
         
         return context
 

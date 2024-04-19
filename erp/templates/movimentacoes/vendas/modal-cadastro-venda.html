@@ -14,11 +14,26 @@
             aria-label="Close"
           ></button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body" id="modal_body_cadastro_venda">
 
           <div class="px-2 mb-3">
             <label for="cliente" class="form-label">Cliente: *</label>
             <input type="text" id="cliente" name="cliente" class="form-control" required />  
+          </div>
+
+          <div class="px-2 mb-3">
+            <label for="cliente_endereco" class="form-label">Endereço do Cliente: (para NF)</label>
+            <input type="text" id="cliente_endereco" name="cliente_endereco" class="form-control" />  
+          </div>
+
+          <div class="px-2 mb-3">
+            <label for="vendedor" class="form-label">Vendedor: </label>
+            <select id="vendedor" name="vendedor" class="form-select" data-dropdown-parent="#modal_body_cadastro_venda">
+              <option value="" selected disabled>Selecione um vendedor</option>
+              {% for vendedor in vendedores %}
+                <option value="{{ vendedor.id }}">{{ vendedor.nome }}</option>
+              {% endfor %}
+            </select>
           </div>
           
           <div class="row px-3">
@@ -62,7 +77,8 @@
 
           <div class="px-2 mb-3">
             <label for="metodo_pagamento" class="form-label">Forma de Pagamento: *</label>
-            <select name="metodo_pagamento" id="metodo_pagamento" class="form-select">
+            <select name="metodo_pagamento" id="metodo_pagamento" class="form-select" data-dropdown-parent="#modal_body_cadastro_venda" required>
+              <option value="" selected disabled>Selecione um método de pagamento</option>
               <option value="d">Dinheiro</option>
               <option value="p">PIX</option>
               <option value="d">Débito</option>

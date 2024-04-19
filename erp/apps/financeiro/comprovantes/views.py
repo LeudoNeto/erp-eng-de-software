@@ -41,7 +41,7 @@ class ComprovanteDetailView(ErpTemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
-        context['comprovante'] = comprovante.objects.get(id=kwargs['id'])
+        context['comprovante'] = comprovante.objects.select_related('vendedor', 'empresa').get(id=kwargs['id'])
         context['produtos_comprovante'] = comprovante_produtos.objects.filter(comprovante=kwargs['id']).values(
             "produto__nome", "quantidade", "valor_unitario", "valor_total"
             )

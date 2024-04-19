@@ -9,7 +9,7 @@
     <h5 class="card-header">Estoque</h5>
     <button class="btn btn-primary me-4" data-bs-toggle="modal" data-bs-target="#modal_adicionar_produto">Adicionar Produto</button>
   </div>
-  <div class="table-responsive text-nowrap">
+  <div class="text-nowrap">
     <table class="table table-striped">
       <thead>
         <tr>
@@ -42,10 +42,10 @@
                   <i class="bx bx-dots-vertical-rounded"></i>
                 </button>
                 <div class="dropdown-menu">
-                  <a class="dropdown-item" href="#" data-id="{{ produto.id }}" id="editar_produto" data-bs-toggle="modal" data-bs-target="#modal_editar_produto"
+                  <a class="dropdown-item" href="#" data-id="{{ produto_estoque.id }}" id="editar_produto" data-bs-toggle="modal" data-bs-target="#modal_editar_produto"
                     ><i class="bx bx-edit-alt me-1"></i>Editar</a
                   >
-                  <a class="dropdown-item" href="#" data-id="{{ produto.id }}" id="excluir_produto"
+                  <a class="dropdown-item" href="#" data-id="{{ produto_estoque.id }}" id="remover_produto"
                     ><i class="bx bx-folder-minus me-1"></i>Remover</a
                   >
                 </div>
@@ -59,6 +59,7 @@
 </div>
 
 {% include "estoque/visao_geral/modal-adicionar-produto-estoque.html" %}
+{% include "estoque/visao_geral/modal-editar-produto-estoque.html" %}
 
 <script src="{% static "js/estoque/visao_geral.js" %}"></script>
 
