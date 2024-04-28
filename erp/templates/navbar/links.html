@@ -9,7 +9,7 @@
     </a>
   </li>
 
-  {% if usuario_nivel_acesso == 10 %}
+  {% if user_nivel_acesso == 10 %}
 
   <li class="menu-item {% if menu_atual == 'administrativo' %} active open {% endif %}">
     <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -38,7 +38,7 @@
 
   {% endif %}
 
-  {% if 8 <= usuario_nivel_acesso %}
+  {% if 8 <= user_nivel_acesso %}
 
   <li class="menu-header small text-uppercase">
     <span class="menu-header-text">Movimentações</span>
@@ -68,7 +68,7 @@
   {% endif %}
 
 
-  {% if usuario_nivel_acesso == 10 or usuario_nivel_acesso == 7 %}
+  {% if user_nivel_acesso == 10 or user_nivel_acesso == 7 %}
 
   <li class="menu-header small text-uppercase">
     <span class="menu-header-text">Estoque</span>
@@ -90,7 +90,7 @@
 
   {% endif %}
 
-  {% if usuario_nivel_acesso == 10 or usuario_nivel_acesso == 8 %}
+  {% if user_nivel_acesso == 10 or user_nivel_acesso == 8 %}
 
   <li class="menu-header small text-uppercase">
     <span class="menu-header-text">Financeiro</span>
@@ -112,7 +112,7 @@
 
   {% endif %}
 
-  {% if usuario_nivel_acesso >= 9 %}
+  {% if user_nivel_acesso >= 9 %}
 
   <li class="menu-header small text-uppercase">
     <span class="menu-header-text">Vidraçaria</span>

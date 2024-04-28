@@ -105,3 +105,15 @@
   text-align: center;
   margin-top: 1rem;
 }
+
+.usuario_sem_foto {
+  background-color: #a32847;
+  border-radius: 50%;
+  display: inline-block;
+  font-size: 1.2rem;
+  font-weight: 700;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  width: 40px;
+}

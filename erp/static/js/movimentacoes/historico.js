@@ -1,56 +1,57 @@
 document.addEventListener("DOMContentLoaded", function() {
-    var modal_cadastro_movimentacao = document.querySelector("#modal_cadastro_movimentacao");
-    var form_cadastro_movimentacao = document.querySelector("#form_cadastro_movimentacao");
-    var salvar_movimentacao = modal_cadastro_movimentacao.querySelector("#salvar_movimentacao");
+    var modal_cadastro_troca = document.querySelector("#modal_cadastro_troca");
+    var form_cadastro_troca = document.querySelector("#form_cadastro_troca");
+    var salvar_troca = modal_cadastro_troca.querySelector("#salvar_troca");
 
-    var excluir_movimentacao_buttons = document.querySelectorAll("#excluir_movimentacao")
+    var excluir_troca_buttons = document.querySelectorAll("#excluir_troca")
 
-    salvar_movimentacao.addEventListener('click', function() {
+    salvar_troca.addEventListener('click', function() {
         swal.fire({
             title: "Verificando campos obrigatórios",
             icon: "info"
         })
 
-        if (form_cadastro_movimentacao.checkValidity()) {
+        let produtos_transacao = [];
+        let linhas_produtos_vendidos = document.querySelectorAll('.produto_vendido_cadastro');
+        for (let linha_produto of linhas_produtos_vendidos) {
+            if (linha_produto.querySelector('input[type=checkbox]').checked) {
+                produtos_transacao.push({
+                    'produto': linha_produto.querySelector('input[type=checkbox]').dataset.id,
+                    'valor_custo': linha_produto.querySelector('#valor_custo').value.replace(/\D/g, '')/100,
+                    'valor_venda': linha_produto.querySelector('#valor_venda').value.replace(/\D/g, '')/100,
+                    'quantidade': linha_produto.querySelector('#quantidade').value,
+                    'tipo': 's'
+                })
+            }
+        }
+
+        let linhas_produtos_comprados = document.querySelectorAll('.produto_comprado_cadastro');
+        for (let linha_produto of linhas_produtos_comprados) {
+            if (linha_produto.querySelector('input[type=checkbox]').checked) {
+                produtos_transacao.push({
+                    'produto': linha_produto.querySelector('input[type=checkbox]').dataset.id,
+                    'valor_custo': linha_produto.querySelector('#valor_custo').value.replace(/\D/g, '')/100,
+                    'valor_venda': linha_produto.querySelector('#valor_venda').value.replace(/\D/g, '')/100,
+                    'quantidade': linha_produto.querySelector('#quantidade').value,
+                    'tipo': 'e'
+                })
+            }
+        }
+
+        if (form_cadastro_troca.checkValidity() && produtos_transacao.length) {
             swal.fire({
-                title: "Movimentação validada com sucesso!",
-                text: "Clique em 'Confirmar' para salvar a movimentação.",
+                title: "Troca validada com sucesso!",
+                text: "Clique em 'Confirmar' para salvar a troca.",
                 icon: "success",
                 confirmButtonText: "Confirmar",
                 showCancelButton: true,
                 cancelButtonText: "Cancelar"
             }).then((result) => {
-                let valor_total_recebido =  modal_cadastro_movimentacao.querySelector("#valor_recebido").value.replace(/\D/g, '')/100;
-                let valor_total_pago = modal_cadastro_movimentacao.querySelector("#valor_pago").value.replace(/\D/g, '')/100;
-                let valor_de_venda_dos_produtos = modal_cadastro_movimentacao.querySelector("#valor_produtos_vendidos").value.replace(/\D/g, '')/100;
-                let valor_de_custo_dos_produtos = modal_cadastro_movimentacao.querySelector("#valor_produtos_comprados").value.replace(/\D/g, '')/100;
-
-                let tipo;
-                if (valor_de_venda_dos_produtos && valor_de_custo_dos_produtos) {
-                    tipo = 't';
-                }
-                else if (!valor_de_venda_dos_produtos && !valor_de_custo_dos_produtos) {
-                    if (valor_total_recebido && !valor_total_pago) {
-                        tipo = 'p';
-                    }
-                    else if (!valor_total_recebido && valor_total_pago) {
-                        tipo = 'r';
-                    }
-                }
-                else if (valor_de_venda_dos_produtos) {
-                    tipo = 'v';
-                }
-                else if (valor_de_custo_dos_produtos) {
-                    tipo = 'c';
-                }
-
-                if (!tipo) {
-                    swal.fire({
-                        title: "Tipo de movimentação não identificado.",
-                        icon: "error",
-                    });
-                    return;
-                }
+                let valor_de_venda_dos_produtos = modal_cadastro_troca.querySelector("#valor_produtos_vendidos").value.replace(/\D/g, '')/100;
+                let valor_de_custo_dos_produtos = modal_cadastro_troca.querySelector("#valor_produtos_comprados").value.replace(/\D/g, '')/100;
+                let valor_total_recebido = valor_de_venda_dos_produtos;
+                let valor_total_pago = valor_de_custo_dos_produtos;
+                let tipo = 't';
 
                 let movimentacao = {
                     valor_total_recebido,
@@ -58,48 +59,23 @@ document.addEventListener("DOMContentLoaded", function() {
                     valor_de_venda_dos_produtos,
                     valor_de_custo_dos_produtos,
                     tipo
-                };                
+                };
 
-                let produtos_transacao = [];
-                let linhas_produtos_vendidos = document.querySelectorAll('.produto_vendido_cadastro');
-                for (let linha_produto of linhas_produtos_vendidos) {
-                    if (linha_produto.querySelector('input[type=checkbox]').checked) {
-                        produtos_transacao.push({
-                            'produto': linha_produto.querySelector('input[type=checkbox]').dataset.id,
-                            'valor_custo': linha_produto.querySelector('#valor_custo').value.replace(/\D/g, '')/100,
-                            'valor_venda': linha_produto.querySelector('#valor_venda').value.replace(/\D/g, '')/100,
-                            'quantidade': linha_produto.querySelector('#quantidade').value,
-                            'tipo': 's'
-                        })
-                    }
-                }
+                movimentacao["calcular_lucro"] = modal_cadastro_troca.querySelector('#calcular_lucro').checked;
 
-                let linhas_produtos_comprados = document.querySelectorAll('.produto_comprado_cadastro');
-                for (let linha_produto of linhas_produtos_comprados) {
-                    if (linha_produto.querySelector('input[type=checkbox]').checked) {
-                        produtos_transacao.push({
-                            'produto': linha_produto.querySelector('input[type=checkbox]').dataset.id,
-                            'valor_custo': linha_produto.querySelector('#valor_custo').value.replace(/\D/g, '')/100,
-                            'valor_venda': linha_produto.querySelector('#valor_venda').value.replace(/\D/g, '')/100,
-                            'quantidade': linha_produto.querySelector('#quantidade').value,
-                            'tipo': 'e'
-                        })
-                    }
-                }
-
-                let formData = new FormData(form_cadastro_movimentacao);
+                let formData = new FormData(form_cadastro_troca);
                 formData.append("transacao", JSON.stringify(movimentacao));
                 formData.append("produtos_transacao", JSON.stringify(produtos_transacao));
 
                 if (result.isConfirmed) {
-                    fetch("/api/movimentacoes/", {
+                    fetch("/api/trocas/", {
                         method: "POST",
                         body: formData
                     })
                     .then(response => {
                         if (response.ok) {
                             swal.fire({
-                                title: "Movimentação salva com sucesso!",
+                                title: "Troca salva com sucesso!",
                                 icon: "success"
                             }).then(() => {
                                 window.location.reload();
@@ -120,14 +96,15 @@ document.addEventListener("DOMContentLoaded", function() {
         } else {
             swal.fire({
                 title: "Preencha os campos obrigatórios",
+                text: "Selecione os produtos envolvidos na troca.",
                 icon: "error",
             })
         }
     });
 
-    excluir_movimentacao_buttons.forEach(button => {
+    excluir_troca_buttons.forEach(button => {
         button.addEventListener('click', function() {
-            let movimentacao_id = button.getAttribute('data-id');
+            let troca_id = button.getAttribute('data-id');
             swal.fire({
                 title: "Tem certeza que deseja excluir a movimentação?",
                 icon: "warning",
@@ -136,7 +113,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 cancelButtonText: "Cancelar"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    fetch("/api/movimentacoes/" + movimentacao_id, {
+                    fetch("/api/movimentacoes/" + troca_id, {
                         method: "DELETE"
                     })
                     .then(response => {
@@ -235,10 +212,7 @@ function atualizarValorProdutosVendidos(editar=false) {
             }
         }
 
-        document.querySelector("#modal_cadastro_movimentacao").querySelector('#valor_produtos_vendidos').value = valor_produtos_vendidos.toLocaleString('pt-BR', {minimumFractionDigits: 2});
-        if (document.querySelector("#modal_cadastro_movimentacao").querySelector('#valor_recebido').value == "0,00") {
-            document.querySelector("#modal_cadastro_movimentacao").querySelector('#valor_recebido').value = valor_produtos_vendidos.toLocaleString('pt-BR', {minimumFractionDigits: 2});
-        }
+        modal_cadastro_troca.querySelector('#valor_produtos_vendidos').value = valor_produtos_vendidos.toLocaleString('pt-BR', {minimumFractionDigits: 2});
     }
 }
 
@@ -254,9 +228,6 @@ function atualizarValorProdutosComprados(editar=false) {
             }
         }
 
-        document.querySelector("#modal_cadastro_movimentacao").querySelector('#valor_produtos_comprados').value = valor_produtos_comprados.toLocaleString('pt-BR', {minimumFractionDigits: 2});
-        if (document.querySelector("#modal_cadastro_movimentacao").querySelector('#valor_pago').value == "0,00") {
-            document.querySelector("#modal_cadastro_movimentacao").querySelector('#valor_pago').value = valor_produtos_comprados.toLocaleString('pt-BR', {minimumFractionDigits: 2});
-        }
+        modal_cadastro_troca.querySelector('#valor_produtos_comprados').value = valor_produtos_comprados.toLocaleString('pt-BR', {minimumFractionDigits: 2});
     }
 }

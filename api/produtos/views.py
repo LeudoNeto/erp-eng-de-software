@@ -45,13 +45,6 @@ class ProdutoViewSet(viewsets.ViewSet):
             data = request.data.copy()
             data['empresa'] = request.user.empresa.id
 
-            if 'valor_custo_padrao' in data:
-                data['valor_custo_padrao'] = data['valor_custo_padrao'].replace('.', '').replace(',', '.')
-            if 'valor_venda_padrao' in data:
-                data['valor_venda_padrao'] = data['valor_venda_padrao'].replace('.', '').replace(',', '.')
-            if 'aliquota_icms' in data:
-                data['aliquota_icms'] = data['aliquota_icms'].replace('.', '').replace(',', '.')
-
             produto_serializer = ProdutoSerializer(data=data)
             if produto_serializer.is_valid():
                 produto_serializer.save()
@@ -72,17 +65,7 @@ class ProdutoViewSet(viewsets.ViewSet):
             data = request.data.copy()
             data['empresa'] = request.user.empresa.id
 
-            if 'valor_custo_padrao' in data:
-                data['valor_custo_padrao'] = data['valor_custo_padrao'].replace('.', '').replace(',', '.')
-            if 'valor_venda_padrao' in data:
-                data['valor_venda_padrao'] = data['valor_venda_padrao'].replace('.', '').replace(',', '.')
-            if 'aliquota_icms' in data:
-                data['aliquota_icms'] = data['aliquota_icms'].replace('.', '').replace(',', '.')
-
-            if not any(data['foto']) and prod.foto:
-            # Se não houver, mantém a foto original na instância do produto
-                data['foto'] = prod.foto
-            else:
+            if 'foto' in data and not data['foto']:
                 del data['foto']
 
             produto_serializer = ProdutoSerializer(prod, data=data)

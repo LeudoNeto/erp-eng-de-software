@@ -46,9 +46,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 let valor_de_custo_dos_produtos = modal_cadastro_venda.querySelector("#valor_de_custo_dos_produtos").value.replace(/\D/g, '')/100;
                 let taxas = modal_cadastro_venda.querySelector("#taxas").value.replace(/\D/g, '')/100;
                 let desconto = modal_cadastro_venda.querySelector("#desconto").value.replace(/\D/g, '')/100;
-                let valor_total_pago = valor_de_custo_dos_produtos.toFixed(2);
+                let valor_total_pago = valor_de_custo_dos_produtos;
                 let valor_total_recebido = (valor_de_venda_dos_produtos + taxas - desconto).toFixed(2);
-                let lucro = (valor_total_recebido - valor_total_pago).toFixed(2);
 
                 let tipo;
                 let produtos_transacao = [];
@@ -99,7 +98,6 @@ document.addEventListener("DOMContentLoaded", function() {
                     tipo,
                     taxas,
                     desconto,
-                    lucro,
                     metodo_pagamento
                 };
 
@@ -418,5 +416,6 @@ function atualizarValorSubtotal(editar=false) {
         }
 
         modal_cadastro_venda.querySelector('#subtotal').value = subtotal.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+        modal_cadastro_venda.querySelector('#valor_de_custo_dos_produtos').value = valor_de_custo_dos_produtos.toLocaleString('pt-BR', {minimumFractionDigits: 2});
     }
 }

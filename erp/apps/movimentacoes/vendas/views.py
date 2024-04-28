@@ -21,6 +21,7 @@ class VendasView(ErpTemplateView):
         transacoes = transacao.objects.filter(tipo__in = ['v', 'p']).order_by('-id')
         for transaction in transacoes:            
             transaction.valor_total_recebido = locale.currency(transaction.valor_total_recebido, grouping=True, symbol=None)
+            transaction.lucro = locale.currency(transaction.lucro, grouping=True, symbol=None)
             transaction.produtos_saida = sum(transaction.produto_transacao_set.filter(tipo='s').values_list("quantidade", flat=True))
 
         context['transacoes'] = transacoes

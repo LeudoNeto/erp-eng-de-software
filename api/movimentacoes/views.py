@@ -20,34 +20,6 @@ import json
 # Create your views here.
 class TransacaoViewSet(viewsets.ViewSet):
 
-    def create(self, request, *args, **kwargs):
-        try:
-            data = request.data
-            transacao = json.loads(data['transacao'])
-            transacao['lucro'] = 10.5
-            produtos_transacao = json.loads(data['produtos_transacao'])
-
-            with transaction.atomic():
-                transacao_serializer = TransacaoSerializer(data=transacao)
-                if transacao_serializer.is_valid():
-                    transacao = transacao_serializer.save()
-                else:
-                    return Response({'erro': 'Erro ao cadastrar a movimentação', 'detalhes': str(transacao_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
-
-                for produto_transacao in produtos_transacao:
-                    produto_transacao['transacao'] = transacao.id
-                    produto_transacao_serializer = ProdutoTransacaoSerializer(data=produto_transacao)
-                    if produto_transacao_serializer.is_valid():
-                        produto_transacao_serializer.save()
-                    else:
-                        return Response({'erro': f'Erro no produto: {produto_transacao["produto"]}', 'detalhes': str(produto_transacao_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
-
-            data = {'sucesso': 'Movimentação cadastrada com sucesso.'}
-            return Response(data, status=status.HTTP_200_OK)
-                
-        except Exception as e:
-            return Response({'erro': 'Erro ao cadastrar movimentação.', 'detalhes': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
     def destroy(self, request, pk=None):
         try:
             transacao_obj = transacao.objects.get(pk=pk)
@@ -64,18 +36,19 @@ class VendaViewSet(viewsets.ViewSet):
     def create(self, request, *args, **kwargs):
         try:
             data = request.data
-            transacao = json.loads(data['transacao'])
+            venda = json.loads(data['transacao'])
             produtos_transacao = json.loads(data['produtos_transacao'])
             produtos_estoque = json.loads(data['produtos_estoque'])
             
-            transacao['empresa'] = request.user.empresa.id
+            venda['empresa'] = request.user.empresa.id
+            venda['lucro'] = round(float(venda['valor_total_recebido']) - venda['valor_total_pago'])
 
             with transaction.atomic():
-                transacao_serializer = TransacaoSerializer(data=transacao)
-                if transacao_serializer.is_valid():
-                    transacao_obj = transacao_serializer.save()
+                venda_serializer = TransacaoSerializer(data=venda)
+                if venda_serializer.is_valid():
+                    transacao_obj = venda_serializer.save()
                 else:
-                    return Response({'erro': 'Erro ao cadastrar a venda', 'detalhes': str(transacao_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({'erro': 'Erro ao cadastrar a venda', 'detalhes': str(venda_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
 
                 for produto_transacao in produtos_transacao:
                     produto_transacao['transacao'] = transacao_obj.id
@@ -85,7 +58,7 @@ class VendaViewSet(viewsets.ViewSet):
                     else:
                         return Response({'erro': f'Erro no produto: {produto_transacao["produto"]}', 'detalhes': str(produto_transacao_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
                     
-                if transacao["remover_estoque"]:
+                if venda["remover_estoque"]:
                     for produto in produtos_estoque:
                         produto_estoque_obj = produto_estoque.objects.get(id=produto['id'])
                         produto_estoque_obj.quantidade -= int(produto['quantidade'])
@@ -213,6 +186,7 @@ class CompraViewSet(viewsets.ViewSet):
             produtos_transacao = json.loads(data['produtos_transacao'])
             
             transacao['empresa'] = request.user.empresa.id
+            transacao['lucro'] = 0
 
             with transaction.atomic():
                 transacao_serializer = TransacaoSerializer(data=transacao)
@@ -258,3 +232,38 @@ class CompraViewSet(viewsets.ViewSet):
         
         except Exception as e:
             return Response({'erro': 'Erro ao cadastrar venda.', 'detalhes': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+class TrocaViewSet(viewsets.ViewSet):
+
+    def create(self, request, *args, **kwargs):
+        try:
+            data = request.data
+            transacao = json.loads(data['transacao'])
+            produtos_transacao = json.loads(data['produtos_transacao'])
+
+            transacao['empresa'] = request.user.empresa.id
+
+            transacao['lucro'] = 0
+            if transacao['calcular_lucro']:
+                transacao['lucro'] = round(transacao['valor_total_recebido'] - transacao['valor_total_pago'])
+
+            with transaction.atomic():
+                transacao_serializer = TransacaoSerializer(data=transacao)
+                if transacao_serializer.is_valid():
+                    transacao = transacao_serializer.save()
+                else:
+                    return Response({'erro': 'Erro ao cadastrar a troca', 'detalhes': str(transacao_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
+
+                for produto_transacao in produtos_transacao:
+                    produto_transacao['transacao'] = transacao.id
+                    produto_transacao_serializer = ProdutoTransacaoSerializer(data=produto_transacao)
+                    if produto_transacao_serializer.is_valid():
+                        produto_transacao_serializer.save()
+                    else:
+                        return Response({'erro': f'Erro no produto: {produto_transacao["produto"]}', 'detalhes': str(produto_transacao_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
+
+            data = {'sucesso': 'Troca cadastrada com sucesso.'}
+            return Response(data, status=status.HTTP_200_OK)
+                
+        except Exception as e:
+            return Response({'erro': 'Erro ao cadastrar a troca.', 'detalhes': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

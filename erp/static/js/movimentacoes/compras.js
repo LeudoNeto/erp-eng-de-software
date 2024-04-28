@@ -30,7 +30,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 let desconto = modal_cadastro_compra.querySelector("#desconto").value.replace(/\D/g, '')/100;
                 let valor_total_pago = (valor_de_custo_dos_produtos + taxas - desconto).toFixed(2);
                 let valor_total_recebido = valor_de_venda_dos_produtos;
-                let lucro = 0;
 
                 if (valor_total_pago < 0) {
                     swal.fire({
@@ -67,7 +66,6 @@ document.addEventListener("DOMContentLoaded", function() {
                     tipo,
                     taxas,
                     desconto,
-                    lucro,
                     metodo_pagamento
                 };
 

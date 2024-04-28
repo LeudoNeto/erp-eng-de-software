@@ -22,8 +22,8 @@ class HistoricoView(ErpTemplateView):
             transaction.valor_total_recebido = locale.currency(transaction.valor_total_recebido, grouping=True, symbol=None)
             transaction.valor_total_pago = locale.currency(transaction.valor_total_pago, grouping=True, symbol=None)
 
-            transaction.produtos_saida = transaction.produto_transacao_set.filter(tipo='s').count()
-            transaction.produtos_entrada = transaction.produto_transacao_set.filter(tipo='e').count()
+            transaction.produtos_saida = sum(transaction.produto_transacao_set.filter(tipo='s').values_list("quantidade", flat=True))
+            transaction.produtos_entrada = sum(transaction.produto_transacao_set.filter(tipo='e').values_list("quantidade", flat=True))
 
         context['transacoes'] = transacoes
 

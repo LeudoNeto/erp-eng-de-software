@@ -1,12 +1,12 @@
 <!-- Modal -->
 
-<div class="modal fade modal-static" id="modal_criar_usuario" tabindex="-1" aria-hidden="true">
+<div class="modal fade modal-static" id="{% block id_modal %}modal_criar_usuario{% endblock id_modal %}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <form id="form_criar_usuario">
+        <form id="{% block id_form %}form_criar_usuario{% endblock id_form %}">
           {% csrf_token %}
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel1">Cadastrar Funcionário</h5>
+            <h5 class="modal-title" id="exampleModalLabel1">{% block title_modal %}Cadastrar Funcionário{% endblock title_modal %}</h5>
             <button
               type="button"
               class="btn-close"
@@ -38,21 +38,29 @@
               </select>
             </div>
 
-            <div class="row mb-3 g-2">
-              <div class="col-6">
-                <label for="senha" class="form-label">Senha: *</label>
-                <input type="password" id="password" name="password" class="form-control" required />
+            {% block inputs_senha %}
+
+              <div class="row mb-3 g-2">
+                <div class="col-6">
+                  <label for="senha" class="form-label">Senha: *</label>
+                  <input type="password" id="password" name="password" class="form-control" required />
+                </div>
+
+                <div class="col-6">
+                  <label for="confirmar_senha" class="form-label">Confirmar Senha: *</label>
+                  <input type="password" id="confirmar_senha" class="form-control" required />
+                </div>
               </div>
 
-              <div class="col-6">
-                <label for="confirmar_senha" class="form-label">Confirmar Senha: *</label>
-                <input type="password" id="confirmar_senha" class="form-control" required />
-              </div>
-            </div>
+            {% endblock inputs_senha %}
 
             <div class="row mb-3 g-2">
+              <div class="mb-5">
                 <label for="foto" class="form-label">Foto:</label>
-                <input type="file" id="foto" name="foto" class="form-control" />
+                <input class="form-control" type="file" id="foto" name="foto" onchange="preview(this)">
+                <button type="button" onclick="clearImage(this)" class="btn btn-primary mt-3">Limpar foto</button>
+              </div>
+              <img id="preview_imagem" src="" style="height:128px; width:128px;" class="img-fluid" hidden />
             </div>
   
           </div>

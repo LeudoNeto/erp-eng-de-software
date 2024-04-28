@@ -14,7 +14,7 @@ class FuncionariosView(ErpTemplateView):
         context['link_atual'] = 'gerenciar_funcionarios'
 
         context['usuarios'] = usuario.objects.filter(empresa=self.request.user.empresa).values(
-            'id', 'nome', 'email', 'cargo__nome', 'telefone'
+            'id', 'nome', 'email', 'foto', 'cargo__nome', 'telefone'
         )
         context['cargos'] = Cargo.objects.filter(empresa=self.request.user.empresa).values(
             'id', 'nome'

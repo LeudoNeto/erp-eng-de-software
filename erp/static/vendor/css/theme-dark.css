@@ -155,7 +155,7 @@
 }
 
 .text-body[href]:hover {
-  color: #b261e6 !important
+  color: #e66161 !important
 }
 
 .bg-primary {
@@ -374,8 +374,8 @@ a.list-group-item-primary.active,button.list-group-item-primary.active {
 
 .btn-check:focus+.btn-primary,.btn-primary:focus,.btn-primary.focus {
   color: #fff;
-  background-color: #b261e6;
-  border-color: #b261e6;
+  background-color: #e66161;
+  border-color: #e66161;
   transform: translateY(0);
   box-shadow: none
 }
@@ -405,7 +405,7 @@ a.list-group-item-primary.active,button.list-group-item-primary.active {
 
 .btn-label-primary:hover {
   border-color: rgba(0,0,0,0) !important;
-  background: #b261e6 !important;
+  background: #e66161 !important;
   color: #fff !important;
   box-shadow: 0 .125rem .25rem 0 rgba(255, 108, 105, 0.4) !important;
   transform: translateY(-1px) !important
@@ -413,7 +413,7 @@ a.list-group-item-primary.active,button.list-group-item-primary.active {
 
 .btn-label-primary:focus,.btn-label-primary.focus {
   color: #fff;
-  background: #b261e6;
+  background: #e66161;
   box-shadow: none !important;
   transform: translateY(0)
 }
@@ -442,16 +442,16 @@ a.list-group-item-primary.active,button.list-group-item-primary.active {
 
 .btn-outline-primary:hover {
   color: #fff !important;
-  background-color: #b261e6 !important;
-  border-color: #b261e6 !important;
+  background-color: #e66161 !important;
+  border-color: #e66161 !important;
   box-shadow: 0 .125rem .25rem 0 rgba(255, 108, 105, 0.4) !important;
   transform: translateY(-1px) !important
 }
 
 .btn-check:focus+.btn-outline-primary,.btn-outline-primary:focus {
   color: #fff;
-  background-color: #b261e6;
-  border-color: #b261e6;
+  background-color: #e66161;
+  border-color: #e66161;
   box-shadow: none;
   transform: translateY(0)
 }
@@ -495,7 +495,7 @@ a.list-group-item-primary.active,button.list-group-item-primary.active {
 }
 
 .nav .nav-link:hover,.nav .nav-link:focus {
-  color: #b261e6
+  color: #e66161
 }
 
 .nav-pills .nav-link.active,.nav-pills .nav-link.active:hover,.nav-pills .nav-link.active:focus {
@@ -1102,15 +1102,15 @@ li.ui-timepicker-selected,.ui-timepicker-list .ui-timepicker-selected:hover {
 
 .shepherd-element .shepherd-button:not(:disabled).btn-primary:hover {
   color: #fff !important;
-  background-color: #b261e6 !important;
-  border-color: #b261e6 !important;
+  background-color: #e66161 !important;
+  border-color: #e66161 !important;
   transform: translateY(-1px) !important
 }
 
 .btn-check:focus+.shepherd-element .shepherd-button:not(:disabled).btn-primary,.shepherd-element .shepherd-button:not(:disabled).btn-primary:focus,.shepherd-element .shepherd-button:not(:disabled).btn-primary.focus {
   color: #fff;
-  background-color: #b261e6;
-  border-color: #b261e6;
+  background-color: #e66161;
+  border-color: #e66161;
   transform: translateY(0);
   box-shadow: none
 }

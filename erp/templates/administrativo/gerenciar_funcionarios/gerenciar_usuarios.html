@@ -38,7 +38,7 @@
                   <i class="bx bx-dots-vertical-rounded"></i>
                 </button>
                 <div class="dropdown-menu">
-                  <a class="dropdown-item" href="#" data-id="{{ usuario.id }}" id="editar_usuario" data-bs-toggle="modal" data-bs-target="#modal_editar_produto"
+                  <a class="dropdown-item" href="#" data-id="{{ usuario.id }}" id="editar_usuario" data-bs-toggle="modal" data-bs-target="#modal_editar_usuario"
                     ><i class="bx bx-edit-alt me-1"></i>Editar</a
                   >
                   <a class="dropdown-item" href="#" data-id="{{ usuario.id }}" id="excluir_usuario"
@@ -55,6 +55,7 @@
 </div>
 
 {% include "administrativo/gerenciar_funcionarios/modal-criar-usuario.html" %}
+{% include "administrativo/gerenciar_funcionarios/modal-editar-usuario.html" %}
 
 <script src="{% static "js/administrativo/gerenciar_funcionarios.js" %}"></script>
 

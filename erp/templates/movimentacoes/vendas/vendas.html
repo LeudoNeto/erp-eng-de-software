@@ -16,6 +16,7 @@
           <th>Cliente</th>
           <th>Data</th>
           <th>Valor Recebido</th>
+          <th>Lucro</th>
           <th>Tipo</th>
           <th>Quantidade de Produtos</th>
           <th>Ações</th>
@@ -27,6 +28,7 @@
             <td>{{ transacao.cliente }}</td>
             <td>{{ transacao.data|date:"d/m/Y" }}</td>
             <td>R$ {{ transacao.valor_total_recebido }}</td>
+            <td>R$ {{ transacao.lucro }}</td>
             <td>
               {% if transacao.tipo == 'v' %}
                 Venda

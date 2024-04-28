@@ -7,8 +7,8 @@ from api.usuarios.models import usuario
 class transacao(models.Model):
     id = models.AutoField(primary_key=True)
     empresa = models.ForeignKey(empresa, on_delete=models.CASCADE)
-    cliente = models.CharField(max_length=255)
-    cliente_endereco = models.CharField(max_length=255, null=True)
+    cliente = models.CharField(max_length=255, null=True)
+    cliente_endereco = models.CharField(max_length=255, null=True, blank=True)
     vendedor = models.ForeignKey(usuario, on_delete=models.CASCADE, null=True)
     data = models.DateTimeField(auto_now_add=True)
     valor_total_recebido = models.DecimalField(max_digits=10, decimal_places=2, null=True)
@@ -32,7 +32,7 @@ class transacao(models.Model):
         ('d', 'Débito'),
         ('c', 'Crédito')
     ]
-    metodo_pagamento = models.CharField(max_length=1, choices=METODO_PAGAMENTO_CHOICES)
+    metodo_pagamento = models.CharField(max_length=1, choices=METODO_PAGAMENTO_CHOICES, null=True, blank=True)
 
 class produto_transacao(models.Model):
     id = models.AutoField(primary_key=True)

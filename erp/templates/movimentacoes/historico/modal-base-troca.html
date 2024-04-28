@@ -1,12 +1,12 @@
 <!-- Modal -->
 
-<div class="modal fade modal-static" id="{% block id_modal %}modal_cadastro_movimentacao{% endblock id_modal %}" tabindex="-1" aria-hidden="true">
+<div class="modal fade modal-static" id="{% block id_modal %}modal_cadastro_troca{% endblock id_modal %}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <form id="{% block id_form %}form_cadastro_movimentacao{% endblock id_form %}">
+        <form id="{% block id_form %}form_cadastro_troca{% endblock id_form %}">
           {% csrf_token %}
           <div class="modal-header">
-            <h5 class="modal-title" id="{% block titulo_modal %}titulo_modal_cadastro{% endblock titulo_modal %}">Cadastrar Movimentação</h5>
+            <h5 class="modal-title" id="{% block titulo_modal %}titulo_modal_cadastro{% endblock titulo_modal %}">Cadastrar Troca</h5>
             <button
               type="button"
               class="btn-close"
@@ -17,14 +17,14 @@
           <div class="modal-body">
 
             <div class="row">
+
+              <div class="px-4 mb-3">
+                <label for="cliente" class="form-label">Cliente:</label>
+                <input type="text" id="cliente" name="cliente" class="form-control" />  
+              </div>
+    
+
               <div class="col-12 col-md-6">
-                <div class="px-2 mb-3">
-                  <label for="valor_recebido" class="form-label">Valor Total Recebido:</label>
-                  <div class="input-group">
-                    <span class="input-group-text">R$</span>
-                    <input type="text" id="valor_recebido" value="0,00" class="form-control" style="text-align: right;" oninput="formatarMoeda(this)" />  
-                  </div>
-                </div>
 
                 <div class="px-2 row mb-3 g-2">
                   <label for="produtos_vendidos" class="form-label">Produtos Vendidos:</label>
@@ -42,13 +42,6 @@
               </div>
 
               <div class="col-12 col-md-6">
-                <div class="px-2 mb-3">
-                  <label for="valor_pago" class="form-label">Valor Total Pago:</label>
-                  <div class="input-group">
-                    <span class="input-group-text">R$</span>
-                    <input type="text" id="valor_pago" value="0,00" class="form-control" style="text-align: right;" oninput="formatarMoeda(this)" />  
-                  </div>
-                </div>
 
                 <div class="px-2 row mb-3 g-2">
                   <label for="produtos_comprados" class="form-label">Produtos Comprados:</label>
@@ -65,23 +58,22 @@
 
               </div>
 
-            </div>
-
-            <div class="px-2 mb-3">
-              <label for="lucro" class="form-label">Lucro:</label>
-              <div class="input-group">
-                <span class="input-group-text">R$</span>
-                <input type="text" disabled id="lucro" value="0,00" class="form-control" style="text-align: right;" />  
+              <div class="px-4 mb-3">
+                <div class="form-check form-switch mt-2">
+                  <input class="form-check-input" type="checkbox" id="calcular_lucro">
+                  <label class="form-check-label" for="calcular_lucro">Calcular Lucro</label>
+                </div>
               </div>
-            </div>
-            
+    
+
+            </div>            
   
           </div>
           <div class="modal-footer">
             <button type="reset" class="btn btn-outline-secondary" data-bs-dismiss="modal">
               Fechar
             </button>
-            <button type="button" id="salvar_movimentacao" class="btn btn-primary">Salvar</button>
+            <button type="button" id="salvar_troca" class="btn btn-primary">Salvar</button>
           </div>
         </form>
       </div>

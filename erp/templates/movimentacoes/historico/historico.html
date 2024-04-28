@@ -7,7 +7,11 @@
 <div class="card">
   <div class="d-flex justify-content-between align-items-center w-100">
     <h5 class="card-header">Movimentações</h5>
-    <button class="btn btn-primary me-4" data-bs-toggle="modal" data-bs-target="#modal_cadastro_movimentacao">Cadastrar Movimentação</button>
+    <div>
+      <a class="btn btn-outline-primary me-2" href="/vendas">Cadastrar Venda <i class='bx bx-link-external ms-2'></i></a>
+      <a class="btn btn-outline-primary me-2" href="/compras">Cadastrar Compra <i class='bx bx-link-external ms-2'></i></a>
+      <button class="btn btn-primary me-4" data-bs-toggle="modal" data-bs-target="#modal_cadastro_troca">Cadastrar Troca <i class="bx bx-transfer ms-2"></i></button>  
+    </div>
   </div>
   <div class="text-nowrap">
     <table class="table table-striped">
@@ -50,10 +54,10 @@
                   <i class="bx bx-dots-vertical-rounded"></i>
                 </button>
                 <div class="dropdown-menu">
-                  <a class="dropdown-item" href="#" data-id="{{ transacao.id }}" id="editar_movimentacao" data-bs-toggle="modal" data-bs-target="#modal_editar_produto"
+                  {% comment %} <a class="dropdown-item" href="#" data-id="{{ transacao.id }}" id="editar_troca" data-bs-toggle="modal" data-bs-target="#modal_editar_produto"
                     ><i class="bx bx-edit-alt me-1"></i>Editar</a
-                  >
-                  <a class="dropdown-item" href="#" data-id="{{ transacao.id }}" id="excluir_movimentacao"
+                  > {% endcomment %}
+                  <a class="dropdown-item" href="#" data-id="{{ transacao.id }}" id="excluir_troca"
                     ><i class="bx bx-trash me-1"></i>Excluir</a
                   >
                 </div>
@@ -66,7 +70,7 @@
   </div>
 </div>
 
-{% include "movimentacoes/historico/modal-cadastro-movimentacao.html" %}
+{% include "movimentacoes/historico/modal-cadastro-troca.html" %}
 {% include "movimentacoes/historico/tabela-produtos-vendidos-cadastro.html" %}
 {% include "movimentacoes/historico/tabela-produtos-comprados-cadastro.html" %}
 

@@ -57,12 +57,11 @@
 
           <div class="row mb-3 g-2">
             <div class="mb-5">
-              <label for="Image" class="form-label">Foto:</label>
-              <input class="form-control" type="file" id="formFile" name="foto" onchange="preview()">
-              <button type="button" onclick="clearImage()" class="btn btn-primary mt-3">Limpar foto</button>
+              <label for="foto" class="form-label">Foto:</label>
+              <input class="form-control" type="file" id="foto" name="foto" onchange="preview(this)">
+              <button type="button" onclick="clearImage(this)" class="btn btn-primary mt-3">Limpar foto</button>
             </div>
-          <img id="frame" src="" style="height:128px; width:128px;" class="img-fluid" hidden />
-
+            <img id="preview_imagem" src="" style="height:128px; width:128px;" class="img-fluid" hidden />
           </div>
 
         </div>

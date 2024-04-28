@@ -17,7 +17,7 @@
         <div class="modal-body">
 
           <div class="px-2 mb-3">
-            <label for="cliente" class="form-label">Cliente: *</label>
+            <label for="cliente" class="form-label">Loja/Fornecedor: *</label>
             <input type="text" id="cliente" name="cliente" class="form-control" required />  
           </div>
           
@@ -54,8 +54,9 @@
           </div>
 
           <div class="px-2 mb-3">
-            <label for="metodo_pagamento" class="form-label">Forma de Pagamento: *</label>
+            <label for="metodo_pagamento" class="form-label">Forma de Pagamento:</label>
             <select name="metodo_pagamento" id="metodo_pagamento" class="form-select">
+              <option value="" selected disabled>Selecione um método de pagamento</option>
               <option value="d">Dinheiro</option>
               <option value="p">PIX</option>
               <option value="d">Débito</option>
@@ -65,7 +66,7 @@
 
           <div class="px-2 mb-3">
             <div class="form-check form-switch mb-3">
-              <input class="form-check-input" type="checkbox" id="adicionar_estoque" checked>
+              <input class="form-check-input" type="checkbox" id="adicionar_estoque">
               <label class="form-check-label" for="adicionar_estoque">Adicionar produtos do Estoque</label>
             </div>
           </div>

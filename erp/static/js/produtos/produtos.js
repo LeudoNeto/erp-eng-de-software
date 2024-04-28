@@ -1,10 +1,14 @@
 document.addEventListener("DOMContentLoaded", function() {
     var salvar_produto = document.querySelector('#salvar_produto');
     var form_produto = document.querySelector('#form_criar_produto');
+
     var editar_produto_buttons = document.querySelectorAll('#editar_produto');
     var form_editar_produto = document.querySelector('#form_editar_produto');
     var salvar_editar_produto = document.querySelector('#salvar_editar_produto');
+
     var excluir_produto_buttons = document.querySelectorAll('#excluir_produto');
+
+    const csrf_token = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
     salvar_produto.addEventListener('click', function() {
         swal.fire({
@@ -22,6 +26,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 cancelButtonText: "Cancelar"
             }).then((result) => {
                 let formData = new FormData(form_produto);
+                formData.append('valor_custo_padrao', formData.get('valor_custo_padrao').replace(/\D/g, '')/100);
+                formData.append('valor_venda_padrao', formData.get('valor_venda_padrao').replace(/\D/g, '')/100);
+                formData.append('aliquota_icms', formData.get('aliquota_icms').replace(/\D/g, '')/10);
 
                 if (result.isConfirmed) {
                     fetch("/api/produtos/", {
@@ -79,6 +86,16 @@ document.addEventListener("DOMContentLoaded", function() {
                         form_editar_produto.querySelector('#valor_venda_padrao').value = data.valor_venda_padrao;
                         form_editar_produto.querySelector('#aliquota_icms').value = data.aliquota_icms;
                         swal.close();
+                        if (data.foto) {
+                            let preview_imagem = form_editar_produto.querySelector('#preview_imagem');
+                            preview_imagem.src = data.foto;
+                            preview_imagem.hidden=false;
+                        }
+                        else {
+                            let preview_imagem = form_editar_produto.querySelector('#preview_imagem');
+                            preview_imagem.src = "";
+                            preview_imagem.hidden=true;
+                        }
                         salvar_editar_produto.dataset.id = produto_id;
                     });
                 }
@@ -89,17 +106,6 @@ document.addEventListener("DOMContentLoaded", function() {
                             text: data.detalhes,
                             icon: "error"
                         });
-                    });
-                }
-            });
-
-            fetch(`/api/produtos/${produto_id}/get_produto_foto`)
-            .then(response => {
-                if (response.ok) {
-                    return response.blob().then(blob => {
-                        let frame = form_editar_produto.querySelector('#frame_editar');
-                        frame.src = URL.createObjectURL(blob);
-                        frame.hidden=false;
                     });
                 }
             });
@@ -124,20 +130,17 @@ document.addEventListener("DOMContentLoaded", function() {
             }).then((result) => {
                 let produto_id = salvar_editar_produto.dataset.id;
                 let formData = new FormData(form_editar_produto);
-                let jsonForm = {};
-
-                formData.forEach((value, key) => {
-                    jsonForm[key] = value;
-                });
+                formData.append('valor_custo_padrao', formData.get('valor_custo_padrao').replace(/\D/g, '')/100);
+                formData.append('valor_venda_padrao', formData.get('valor_venda_padrao').replace(/\D/g, '')/100);
+                formData.append('aliquota_icms', formData.get('aliquota_icms').replace(/\D/g, '')/10);
 
                 if (result.isConfirmed) {
                     fetch(`/api/produtos/${produto_id}/`, {
                         method: "PUT",
                         headers: {
-                            "Content-Type": "application/json",
-                            "X-CSRFToken": jsonForm.csrfmiddlewaretoken
+                            "X-CSRFToken": csrf_token
                         },
-                        body: JSON.stringify(jsonForm)
+                        body: formData
                     })
                     .then(response => {
                         if (response.ok) {
@@ -182,7 +185,10 @@ document.addEventListener("DOMContentLoaded", function() {
             }).then((result) => {
                 if (result.isConfirmed) {
                     fetch("/api/produtos/" + produto_id, {
-                        method: "DELETE"
+                        method: "DELETE",
+                        headers: {
+                            "X-CSRFToken": csrf_token
+                        }
                     })
                     .then(response => {
                         if (response.ok) {
@@ -225,29 +231,16 @@ function formatarICMS(input) {
     input.value = valor;
 }
 
-function preview(editar=false) {
-    if (editar) {
-        let frame_editar = document.getElementById('frame_editar');
-        frame_editar.src = URL.createObjectURL(event.target.files[0]);
-        frame_editar.hidden=false;
-    }
-    else {
-        let frame = document.getElementById('frame');
-        frame.src = URL.createObjectURL(event.target.files[0]);
-        frame.hidden=false;
-    }
+function preview(botao) {
+    let modal = botao.closest('.modal');
+    let preview_imagem = modal.querySelector('#preview_imagem');
+    preview_imagem.src = URL.createObjectURL(botao.files[0]);
+    preview_imagem.hidden=false;
 }
-function clearImage(editar=false) {
-    if (editar) {
-        document.getElementById('formFile_editar').value = null;
-        let frame_editar = document.getElementById('frame_editar');
-        frame_editar.src = "";
-        frame_editar.hidden=true;
-    }
-    else {
-        document.getElementById('formFile').value = null;
-        let frame = document.getElementById('frame');
-        frame.src = "";
-        frame.hidden=true;
-    }
+function clearImage(botao) {
+    let modal = botao.closest('.modal');
+    modal.querySelector('#foto').value = null;
+    let preview_imagem = modal.querySelector('#preview_imagem');
+    preview_imagem.src = "";
+    preview_imagem.hidden=true;
 }
