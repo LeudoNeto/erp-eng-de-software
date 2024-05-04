@@ -7,6 +7,7 @@ from django.http import FileResponse
 
 from .models import usuario
 from .serializers import UsuarioSerializer
+from erp.utils import tratar_erros_serializer
 
 class UsuarioViewSet(viewsets.ViewSet):
 
@@ -32,7 +33,7 @@ class UsuarioViewSet(viewsets.ViewSet):
 
             serializer = UsuarioSerializer(data=data)
             if not serializer.is_valid():
-                return Response({'erro': 'Erro ao cadastrar o funcionário', 'detalhes': str(serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'erro': 'Erro ao cadastrar o funcionário', 'detalhes': tratar_erros_serializer(serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
             
             serializer.save()
             return Response({'sucesso': 'Usuário criado com sucesso'}, status=status.HTTP_201_CREATED)
@@ -55,7 +56,7 @@ class UsuarioViewSet(viewsets.ViewSet):
 
             serializer = UsuarioSerializer(usuario_obj, data=data, partial=True)
             if not serializer.is_valid():
-                return Response({'erro': 'Erro ao atualizar o funcionário', 'detalhes': str(serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'erro': 'Erro ao atualizar o funcionário', 'detalhes': tratar_erros_serializer(serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
             
             serializer.save()
             return Response({'sucesso': 'Usuário atualizado com sucesso'}, status=status.HTTP_200_OK)

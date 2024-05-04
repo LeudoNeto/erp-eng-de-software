@@ -8,6 +8,7 @@ from .models import (
     produto_estoque_transacao
 )
 from .serializers import ProdutoEstoqueSerializer
+from erp.utils import tratar_erros_serializer
 
 class ProdutoEstoqueViewSet(viewsets.ViewSet):
 
@@ -26,10 +27,8 @@ class ProdutoEstoqueViewSet(viewsets.ViewSet):
             data = request.data.copy()
             data['empresa'] = request.user.empresa.id
 
-            if 'valor_custo' in data:
-                data['valor_custo'] = data['valor_custo'].replace('.', '').replace(',', '.')
-            if 'valor_venda' in data:
-                data['valor_venda'] = data['valor_venda'].replace('.', '').replace(',', '.')
+            if int(data['quantidade']) <= 0:
+                return Response({'erro': 'Erro ao adicionar produto ao estoque', 'detalhes': 'Quantidade deve ser maior que 0'}, status=status.HTTP_400_BAD_REQUEST)
 
             produto_serializer = ProdutoEstoqueSerializer(data=data)
             if produto_serializer.is_valid():
@@ -39,7 +38,7 @@ class ProdutoEstoqueViewSet(viewsets.ViewSet):
             else:
                 errors = produto_serializer.errors
                 if errors:
-                    return Response({'erro': 'Erro ao adicionar produto', 'detalhes': str(errors)}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({'erro': 'Erro ao adicionar produto', 'detalhes': tratar_erros_serializer(errors)}, status=status.HTTP_400_BAD_REQUEST)
                 else:
                     return Response({'erro': 'Erro ao adicionar produto', 'detalhes': 'Erro de validação'}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
@@ -51,10 +50,8 @@ class ProdutoEstoqueViewSet(viewsets.ViewSet):
             data = request.data.copy()
             data['empresa'] = request.user.empresa.id
 
-            if 'valor_custo' in data:
-                data['valor_custo'] = data['valor_custo'].replace('.', '').replace(',', '.')
-            if 'valor_venda' in data:
-                data['valor_venda'] = data['valor_venda'].replace('.', '').replace(',', '.')
+            if int(data['quantidade']) <= 0:
+                return Response({'erro': 'Erro ao editar produto no estoque', 'detalhes': 'Quantidade deve ser maior que 0'}, status=status.HTTP_400_BAD_REQUEST)
 
             produto_serializer = ProdutoEstoqueSerializer(prod, data=data)
             if produto_serializer.is_valid():
@@ -64,7 +61,7 @@ class ProdutoEstoqueViewSet(viewsets.ViewSet):
             else:
                 errors = produto_serializer.errors
                 if errors:
-                    return Response({'erro': 'Erro ao editar produto estoque', 'detalhes': str(errors)}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({'erro': 'Erro ao editar produto estoque', 'detalhes': tratar_erros_serializer(errors)}, status=status.HTTP_400_BAD_REQUEST)
                 else:
                     return Response({'erro': 'Erro ao editar produto estoque', 'detalhes': 'Erro de validação'}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:

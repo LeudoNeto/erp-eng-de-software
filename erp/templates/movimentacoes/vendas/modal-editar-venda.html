@@ -1,0 +1,12 @@
+{% extends "movimentacoes/vendas/modal-cadastro-venda.html" %}
+
+{% block id_modal %}modal_editar_venda{% endblock id_modal %}
+{% block id_form %}form_editar_venda{% endblock id_form %}
+{% block titulo_modal %}Editar Venda{% endblock titulo_modal %}
+{% block botoes_produtos %}
+<div class="row px-4 mb-3">
+  <label for="produtos_vendidos" class="form-label">Produtos Vendidos:</label>
+  <button id="produtos_vendidos" type="button" data-bs-toggle="modal" data-bs-target="#tabela_produtos_editar_venda" class="btn btn-primary mt-0">Selecionar</button>
+</div>
+{% endblock botoes_produtos %}
+{% block switches %}{% endblock switches %}

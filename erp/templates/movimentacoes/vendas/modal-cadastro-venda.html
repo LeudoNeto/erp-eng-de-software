@@ -6,7 +6,7 @@
       <form id="{% block id_form %}form_cadastro_venda{% endblock id_form %}">
         {% csrf_token %}
         <div class="modal-header">
-          <h5 class="modal-title" id="{% block titulo_modal %}titulo_modal_cadastro{% endblock titulo_modal %}">Cadastrar Venda</h5>
+          <h5 class="modal-title" id="titulo_modal">{% block titulo_modal %}Cadastrar Venda{% endblock titulo_modal %}</h5>
           <button
             type="button"
             class="btn-close"
@@ -35,18 +35,20 @@
               {% endfor %}
             </select>
           </div>
-          
-          <div class="row px-3">
-            <div class="col-6 px-2 row mb-3 me-2 mt-0 g-2">
-              <label for="produtos_vendidos" class="form-label">Produtos Vendidos:</label>
-              <button id="produtos_vendidos" type="button" data-bs-toggle="modal" data-bs-target="#tabela_produtos_cadastro_venda" class="btn btn-primary mt-0">Selecionar</button>
-            </div>
 
-            <div class="col-6 px-2 row mb-3 mt-0 g-2">
-              <label for="produtos_estoque_vendidos" class="form-label">Produtos Vendidos (do Estoque):</label>
-              <button id="produtos_estoque_vendidos" type="button" data-bs-toggle="modal" data-bs-target="#tabela_produtos_estoque_cadastro_venda" class="btn btn-primary mt-0">Selecionar</button>
+          {% block botoes_produtos %}
+            <div class="row px-3">
+              <div class="col-6 px-2 row mb-3 me-2 mt-0 g-2">
+                <label for="produtos_vendidos" class="form-label">Produtos Vendidos:</label>
+                <button id="produtos_vendidos" type="button" data-bs-toggle="modal" data-bs-target="#tabela_produtos_cadastro_venda" class="btn btn-primary mt-0">Selecionar</button>
+              </div>
+
+              <div class="col-6 px-2 row mb-3 mt-0 g-2">
+                <label for="produtos_estoque_vendidos" class="form-label">Produtos Vendidos (do Estoque):</label>
+                <button id="produtos_estoque_vendidos" type="button" data-bs-toggle="modal" data-bs-target="#tabela_produtos_estoque_cadastro_venda" class="btn btn-primary mt-0">Selecionar</button>
+              </div>
             </div>
-          </div>
+          {% endblock botoes_produtos %}
 
           <div class="px-2 mb-3">
             <label for="subtotal" class="form-label">Subtotal:</label>
@@ -86,26 +88,28 @@
             </select>  
           </div>
 
-          <div class="px-2 mb-3">
-            <div class="form-check form-switch mb-3">
-              <input class="form-check-input" type="checkbox" id="remover_estoque">
-              <label class="form-check-label" for="remover_estoque">Remover produtos do Estoque</label>
+          {% block switches %}
+            <div class="px-2 mb-3">
+              <div class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" id="remover_estoque">
+                <label class="form-check-label" for="remover_estoque">Remover produtos do Estoque</label>
+              </div>
             </div>
-          </div>
-        
-          <div class="px-2 mb-3">
-            <div class="form-check form-switch mb-3">
-              <input class="form-check-input" type="checkbox" id="emitir_comprovante">
-              <label class="form-check-label" for="emitir_comprovante">Emitir Comprovante</label>
+          
+            <div class="px-2 mb-3">
+              <div class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" id="emitir_comprovante">
+                <label class="form-check-label" for="emitir_comprovante">Emitir Comprovante</label>
+              </div>
             </div>
-          </div>
 
-          <div class="px-2 mb-3">
-            <div class="form-check form-switch mb-3">
-              <input class="form-check-input" type="checkbox" id="emitir_nota_fiscal">
-              <label class="form-check-label" for="emitir_nota_fiscal">Emitir Nota Fiscal</label>
+            <div class="px-2 mb-3">
+              <div class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" id="emitir_nota_fiscal">
+                <label class="form-check-label" for="emitir_nota_fiscal">Emitir Nota Fiscal</label>
+              </div>
             </div>
-          </div>
+          {% endblock switches %}
 
         </div>
         <div class="modal-footer">

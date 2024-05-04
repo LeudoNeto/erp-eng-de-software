@@ -1,6 +1,7 @@
 from django.urls import path, include
 from rest_framework import routers
 
+from .views import DashboardViewSet
 from .autenticacao.views import LoginViewSet, CargoViewSet
 from .usuarios.views import UsuarioViewSet
 from .empresas.views import EmpresaViewSet
@@ -11,6 +12,7 @@ from .comprovantes.views import ComprovanteViewSet
 from .notas_fiscais.views import NotaFiscalViewSet
 
 router = routers.DefaultRouter()
+router.register(r"dashboard", DashboardViewSet, basename="dashboard")
 router.register(r"login", LoginViewSet, basename="login")
 router.register(r"usuarios", UsuarioViewSet, basename="usuarios")
 router.register(r"empresas", EmpresaViewSet, basename="empresas")

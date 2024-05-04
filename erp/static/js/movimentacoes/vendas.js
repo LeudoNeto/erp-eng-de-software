@@ -3,6 +3,11 @@ document.addEventListener("DOMContentLoaded", function() {
     var form_cadastro_venda = document.querySelector("#form_cadastro_venda");
     var salvar_venda = modal_cadastro_venda.querySelector("#salvar_venda");
 
+    var editar_venda_buttons = document.querySelectorAll("#editar_venda");
+    var modal_editar_venda = document.querySelector("#modal_editar_venda");
+    var form_editar_venda = document.querySelector("#form_editar_venda");
+    var salvar_editar_venda = modal_editar_venda.querySelector("#salvar_venda");
+
     var excluir_venda_buttons = document.querySelectorAll("#excluir_venda")
 
     const csrf_token = document.querySelector('[name=csrfmiddlewaretoken]').value;
@@ -299,6 +304,149 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
+    editar_venda_buttons.forEach(button => {
+        button.addEventListener('click', function() {
+            let movimentacao_id = button.getAttribute('data-id');
+            fetch(`/api/vendas/${movimentacao_id}/`, {
+                method: "GET"
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json().then(data => {
+                        modal_editar_venda.querySelector("#cliente").value = data.cliente;
+                        modal_editar_venda.querySelector("#cliente_endereco").value = data.cliente_endereco;
+                        modal_editar_venda.querySelector("#vendedor").value = data.vendedor;
+                        modal_editar_venda.querySelector("#metodo_pagamento").value = data.metodo_pagamento;
+                        modal_editar_venda.querySelector("#subtotal").value = (data.valor_de_venda_dos_produtos).toLocaleString('pt-BR', {minimumFractionDigits: 2});
+                        modal_editar_venda.querySelector("#valor_de_custo_dos_produtos").value = (data.valor_de_custo_dos_produtos).toLocaleString('pt-BR', {minimumFractionDigits: 2});
+                        modal_editar_venda.querySelector("#taxas").value = (data.taxas).toLocaleString('pt-BR', {minimumFractionDigits: 2});
+                        modal_editar_venda.querySelector("#desconto").value = (data.desconto).toLocaleString('pt-BR', {minimumFractionDigits: 2});
+
+                        for (let produto_transacao of data.produtos_transacao) {
+                            let linha_produto = document.querySelector(`.produto_editar [data-id="${produto_transacao.produto}"]`).closest('tr');
+                            linha_produto.querySelector('#checkbox_produto').checked = true;
+                            linha_produto.querySelector('#quantidade').value = produto_transacao.quantidade;
+                            linha_produto.querySelector('#valor_custo').value = (produto_transacao.valor_custo).toLocaleString('pt-BR', {minimumFractionDigits: 2});
+                            linha_produto.querySelector('#valor_venda').value = (produto_transacao.valor_venda).toLocaleString('pt-BR', {minimumFractionDigits: 2});
+                            linha_produto.querySelector('#valor_total_custo').value = ((produto_transacao.valor_custo * produto_transacao.quantidade)).toLocaleString('pt-BR', {minimumFractionDigits: 2});
+                            linha_produto.querySelector('#valor_total_venda').value = ((produto_transacao.valor_venda * produto_transacao.quantidade)).toLocaleString('pt-BR', {minimumFractionDigits: 2});
+                        }
+
+                        salvar_editar_venda.dataset.id = movimentacao_id;
+                    });
+                }
+                else {
+                    return response.json().then(data => {
+                        swal.fire({
+                            title: data.erro,
+                            text: data.detalhes,
+                            icon: "error"
+                        });
+                    });
+                }
+            });
+        });
+    });
+
+    salvar_editar_venda.addEventListener('click', function() {
+        swal.fire({
+            title: "Verificando campos obrigatórios",
+            icon: "info"
+        })
+
+        if (form_editar_venda.checkValidity()) {
+            swal.fire({
+                title: "Venda validada com sucesso!",
+                text: "Clique em 'Confirmar' para salvar a venda.",
+                icon: "success",
+                confirmButtonText: "Confirmar",
+                showCancelButton: true,
+                cancelButtonText: "Cancelar"
+            }).then((result) => {
+                let cliente = modal_editar_venda.querySelector("#cliente").value;
+                let cliente_endereco = modal_editar_venda.querySelector("#cliente_endereco").value;
+                let vendedor = modal_editar_venda.querySelector("#vendedor").value;
+                let metodo_pagamento = modal_editar_venda.querySelector("#metodo_pagamento").value;
+                let valor_de_venda_dos_produtos = modal_editar_venda.querySelector("#subtotal").value.replace(/\D/g, '')/100;
+                let valor_de_custo_dos_produtos = modal_editar_venda.querySelector("#valor_de_custo_dos_produtos").value.replace(/\D/g, '')/100;
+                let taxas = modal_editar_venda.querySelector("#taxas").value.replace(/\D/g, '')/100;
+                let desconto = modal_editar_venda.querySelector("#desconto").value.replace(/\D/g, '')/100;
+                let valor_total_pago = valor_de_custo_dos_produtos;
+                let valor_total_recebido = (valor_de_venda_dos_produtos + taxas - desconto).toFixed(2);
+
+                let tipo;
+                let produtos_transacao = [];
+                let linhas_produtos = document.querySelectorAll('.produto_editar');
+                for (let linha_produto of linhas_produtos) {
+                    if (linha_produto.querySelector('input[type=checkbox]').checked) {
+                        produtos_transacao.push({
+                            'produto': linha_produto.querySelector('input[type=checkbox]').dataset.id,
+                            'valor_custo': linha_produto.querySelector('#valor_custo').value.replace(/\D/g, '')/100,
+                            'valor_venda': linha_produto.querySelector('#valor_venda').value.replace(/\D/g, '')/100,
+                            'quantidade': linha_produto.querySelector('#quantidade').value,
+                            'tipo': 's'
+                        })
+                    }
+                }
+
+                tipo = produtos_transacao.length ? 'v' : 'p';
+
+                let movimentacao = {
+                    cliente,
+                    cliente_endereco,
+                    vendedor,
+                    valor_total_recebido,
+                    valor_total_pago,
+                    valor_de_venda_dos_produtos,
+                    valor_de_custo_dos_produtos,
+                    tipo,
+                    taxas,
+                    desconto,
+                    metodo_pagamento
+                };
+
+                let movimentacao_id = salvar_editar_venda.dataset.id;
+                let formData = new FormData(form_editar_venda);
+                formData.append("transacao", JSON.stringify(movimentacao));
+                formData.append("produtos_transacao", JSON.stringify(produtos_transacao));
+
+                if (result.isConfirmed) {
+                    fetch(`/api/vendas/${movimentacao_id}/`, {
+                        method: "PUT",
+                        headers: {
+                            "X-CSRFToken": csrf_token,
+                        },
+                        body: formData
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            swal.fire({
+                                title: "Venda salva com sucesso!",
+                                icon: "success"
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        }
+                        else {
+                            return response.json().then(data => {
+                                swal.fire({
+                                    title: data.erro,
+                                    text: data.detalhes,
+                                    icon: "error"
+                                });
+                            });
+                        }
+                    });
+                }
+            });
+        } else {
+            swal.fire({
+                title: "Preencha os campos obrigatórios",
+                icon: "error",
+            })
+        }
+    });
+
     excluir_venda_buttons.forEach(button => {
         button.addEventListener('click', function() {
             let movimentacao_id = button.getAttribute('data-id');
@@ -417,5 +565,20 @@ function atualizarValorSubtotal(editar=false) {
 
         modal_cadastro_venda.querySelector('#subtotal').value = subtotal.toLocaleString('pt-BR', {minimumFractionDigits: 2});
         modal_cadastro_venda.querySelector('#valor_de_custo_dos_produtos').value = valor_de_custo_dos_produtos.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+    }
+    else {
+        let linhas_produto = document.querySelectorAll('.produto_editar');
+        let valor_de_custo_dos_produtos = 0;
+        let subtotal = 0;
+
+        for (let linha_produto of linhas_produto) {
+            let valor_custo_total = linha_produto.querySelector('#valor_total_custo');
+            let valor_venda_total = linha_produto.querySelector('#valor_total_venda');
+            valor_de_custo_dos_produtos += parseFloat(valor_custo_total.value.replace(/\D/g, '')/100);
+            subtotal += parseFloat(valor_venda_total.value.replace(/\D/g, '')/100);
+        }
+
+        modal_editar_venda.querySelector('#subtotal').value = subtotal.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+        modal_editar_venda.querySelector('#valor_de_custo_dos_produtos').value = valor_de_custo_dos_produtos.toLocaleString('pt-BR', {minimumFractionDigits: 2});
     }
 }

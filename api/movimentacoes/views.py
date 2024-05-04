@@ -14,6 +14,7 @@ from .serializers import TransacaoSerializer, ProdutoTransacaoSerializer
 from api.produtos_estoque.serializers import ProdutoEstoqueSerializer
 from api.comprovantes.serializers import ComprovanteSerializer, ComprovanteProdutoSerializer
 from api.notas_fiscais.serializers import NotaFiscalSerializer, NotaFiscalProdutoSerializer
+from erp.utils import tratar_erros_serializer
 
 import json
 
@@ -33,6 +34,24 @@ class TransacaoViewSet(viewsets.ViewSet):
 
 class VendaViewSet(viewsets.ViewSet):
 
+    def retrieve(self, request, pk=None):
+        try:
+            transacao_obj = transacao.objects.filter(id=pk).first()
+            if not transacao_obj:
+                return Response({'erro': 'Venda não encontrada'}, status=status.HTTP_404_NOT_FOUND)
+            
+            produtos_transacao = produto_transacao.objects.filter(transacao=transacao_obj).values(
+                "produto", "quantidade", "valor_custo", "valor_venda"
+            )
+            transacao_obj.produtos = produtos_transacao
+            serializer = TransacaoSerializer(transacao_obj)
+            return Response({
+                **serializer.data,
+                "produtos_transacao": produtos_transacao
+            }, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'erro': 'Erro ao buscar a venda', 'detalhes': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     def create(self, request, *args, **kwargs):
         try:
             data = request.data
@@ -40,6 +59,9 @@ class VendaViewSet(viewsets.ViewSet):
             produtos_transacao = json.loads(data['produtos_transacao'])
             produtos_estoque = json.loads(data['produtos_estoque'])
             
+            if not 'valor_total_recebido' in venda or not 'valor_total_pago' in venda:
+                return Response({'erro': 'Valor total recebido e valor total pago são obrigatórios'}, status=status.HTTP_400_BAD_REQUEST)
+
             venda['empresa'] = request.user.empresa.id
             venda['lucro'] = round(float(venda['valor_total_recebido']) - venda['valor_total_pago'])
 
@@ -48,7 +70,7 @@ class VendaViewSet(viewsets.ViewSet):
                 if venda_serializer.is_valid():
                     transacao_obj = venda_serializer.save()
                 else:
-                    return Response({'erro': 'Erro ao cadastrar a venda', 'detalhes': str(venda_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({'erro': 'Erro ao cadastrar a venda', 'detalhes': tratar_erros_serializer(venda_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
 
                 for produto_transacao in produtos_transacao:
                     produto_transacao['transacao'] = transacao_obj.id
@@ -56,7 +78,7 @@ class VendaViewSet(viewsets.ViewSet):
                     if produto_transacao_serializer.is_valid():
                         produto_transacao_serializer.save()
                     else:
-                        return Response({'erro': f'Erro no produto: {produto_transacao["produto"]}', 'detalhes': str(produto_transacao_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
+                        return Response({'erro': f'Erro no produto: {produto_transacao["produto"]}', 'detalhes': tratar_erros_serializer(produto_transacao_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
                     
                 if venda["remover_estoque"]:
                     for produto in produtos_estoque:
@@ -70,10 +92,47 @@ class VendaViewSet(viewsets.ViewSet):
                             produto_estoque_obj.save()
 
             data = {'sucesso': 'Venda cadastrada com sucesso.', 'venda_id': transacao_obj.id}
-            return Response(data, status=status.HTTP_200_OK)
+            return Response(data, status=status.HTTP_201_CREATED)
         
         except Exception as e:
             return Response({'erro': 'Erro ao cadastrar venda.', 'detalhes': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+    def update(self, request, pk=None):
+        try:
+            transacao_obj = transacao.objects.get(pk=pk)
+            data = request.data
+            venda = json.loads(data['transacao'])
+            produtos_transacao = json.loads(data['produtos_transacao'])
+
+            if not 'valor_total_recebido' in venda or not 'valor_total_pago' in venda:
+                return Response({'erro': 'Valor total recebido e valor total pago são obrigatórios'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            venda['empresa'] = request.user.empresa.id
+            venda['lucro'] = round(float(venda['valor_total_recebido']) - venda['valor_total_pago'])
+
+            with transaction.atomic():
+                venda_serializer = TransacaoSerializer(transacao_obj, data=venda, partial=True)
+                if venda_serializer.is_valid():
+                    transacao_obj = venda_serializer.save()
+                else:
+                    return Response({'erro': 'Erro ao cadastrar a venda', 'detalhes': tratar_erros_serializer(venda_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
+                
+                produto_transacao.objects.filter(transacao=transacao_obj).delete()
+
+                for produto_transacao_obj in produtos_transacao:
+                    produto_transacao_obj['transacao'] = transacao_obj.id
+                    produto_transacao_serializer = ProdutoTransacaoSerializer(data=produto_transacao_obj)
+                    if produto_transacao_serializer.is_valid():
+                        produto_transacao_serializer.save()
+                    else:
+                        return Response({'erro': f'Erro no produto: {produto_transacao_obj["produto"]}', 'detalhes': tratar_erros_serializer(produto_transacao_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
+
+            return Response({'sucesso': 'Venda atualizada com sucesso.'}, status=status.HTTP_200_OK)
+        except transacao.DoesNotExist:
+            return Response({'erro': 'Venda não encontrada'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'erro': 'Erro ao atualizar venda.', 'detalhes': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
         
     @action(detail=True, methods=['post'])
     def comprovante_da_venda(self, request, pk):
@@ -97,7 +156,7 @@ class VendaViewSet(viewsets.ViewSet):
                 if comprovante_serializer.is_valid():
                     comprovante_obj = comprovante_serializer.save()
                 else:
-                    return Response({'erro': 'Erro ao emitir o comprovante', 'detalhes': str(comprovante_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({'erro': 'Erro ao emitir o comprovante', 'detalhes': tratar_erros_serializer(comprovante_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
 
                 for produto in produtos_transacao:
                     produto_comprovante_serializer = ComprovanteProdutoSerializer(data={
@@ -110,10 +169,10 @@ class VendaViewSet(viewsets.ViewSet):
                     if produto_comprovante_serializer.is_valid():
                         produto_comprovante_serializer.save()
                     else:
-                        return Response({'erro': f'Erro no produto: {produto["produto_id"]}', 'detalhes': str(produto_comprovante_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
+                        return Response({'erro': f'Erro no produto: {produto["produto_id"]}', 'detalhes': tratar_erros_serializer(produto_comprovante_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
 
             data = {'sucesso': 'Comprovante emitido com sucesso.', "comprovante": comprovante_obj.id}
-            return Response(data, status=status.HTTP_200_OK)
+            return Response(data, status=status.HTTP_201_CREATED)
         
         except transacao.DoesNotExist:
             return Response({'erro': 'Transação não encontrada'}, status=status.HTTP_404_NOT_FOUND)
@@ -143,7 +202,7 @@ class VendaViewSet(viewsets.ViewSet):
                 if nota_fiscal_serializer.is_valid():
                     nota_fiscal_obj = nota_fiscal_serializer.save()
                 else:
-                    return Response({'erro': 'Erro ao emitir a nota fiscal', 'detalhes': str(nota_fiscal_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({'erro': 'Erro ao emitir a nota fiscal', 'detalhes': tratar_erros_serializer(nota_fiscal_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
 
                 icms_total = 0
                 for produto_nf in produtos_transacao:
@@ -163,14 +222,14 @@ class VendaViewSet(viewsets.ViewSet):
                     if produto_nota_fiscal_serializer.is_valid():
                         produto_nota_fiscal_serializer.save()
                     else:
-                        return Response({'erro': f'Erro no produto: {produto_nf["produto_id"]}', 'detalhes': str(produto_nota_fiscal_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
+                        return Response({'erro': f'Erro no produto: {produto_nf["produto_id"]}', 'detalhes': tratar_erros_serializer(produto_nota_fiscal_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
 
                 nota_fiscal_obj.icms_total = round(icms_total, 2)
                 nota_fiscal_obj.total_liquido = round(nota_fiscal_obj.total - nota_fiscal_obj.icms_total, 2)
                 nota_fiscal_obj.save()
 
             data = {'sucesso': 'Nota fiscal emitida com sucesso.', "nota_fiscal": nota_fiscal_obj.id}
-            return Response(data, status=status.HTTP_200_OK)
+            return Response(data, status=status.HTTP_201_CREATED)
         
         except transacao.DoesNotExist:
             return Response({'erro': 'Venda não encontrada'}, status=status.HTTP_404_NOT_FOUND)
@@ -178,6 +237,25 @@ class VendaViewSet(viewsets.ViewSet):
             return Response({'erro': 'Erro ao emitir nota fiscal', 'detalhes': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class CompraViewSet(viewsets.ViewSet):
+
+    def retrieve(self, request, pk=None):
+        try:
+            transacao_obj = transacao.objects.filter(id=pk).first()
+            if not transacao_obj:
+                return Response({'erro': 'Compra não encontrada'}, status=status.HTTP_404_NOT_FOUND)
+            
+            produtos_transacao = produto_transacao.objects.filter(transacao=transacao_obj).values(
+                "produto", "quantidade", "valor_custo", "valor_venda"
+            )
+            transacao_obj.produtos = produtos_transacao
+            serializer = TransacaoSerializer(transacao_obj)
+            return Response({
+                **serializer.data,
+                "produtos_transacao": produtos_transacao
+            }, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'erro': 'Erro ao buscar a compra', 'detalhes': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
     def create(self, request, *args, **kwargs):
         try:
@@ -193,7 +271,7 @@ class CompraViewSet(viewsets.ViewSet):
                 if transacao_serializer.is_valid():
                     transacao_obj = transacao_serializer.save()
                 else:
-                    return Response({'erro': 'Erro ao cadastrar a compra', 'detalhes': str(transacao_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({'erro': 'Erro ao cadastrar a compra', 'detalhes': tratar_erros_serializer(transacao_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
 
                 for produto_transacao in produtos_transacao:
                     produto_transacao['transacao'] = transacao_obj.id
@@ -201,7 +279,7 @@ class CompraViewSet(viewsets.ViewSet):
                     if produto_transacao_serializer.is_valid():
                         produto_transacao_serializer.save()
                     else:
-                        return Response({'erro': f'Erro no produto: {produto_transacao["produto"]}', 'detalhes': str(produto_transacao_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
+                        return Response({'erro': f'Erro no produto: {produto_transacao["produto"]}', 'detalhes': tratar_erros_serializer(produto_transacao_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
                     
                 if transacao["adicionar_estoque"]:
                     for produto in produtos_transacao:
@@ -225,14 +303,48 @@ class CompraViewSet(viewsets.ViewSet):
                             if produto_estoque_serializer.is_valid():
                                 produto_estoque_serializer.save()
                             else:
-                                return Response({'erro': f'Erro no produto: {produto_estoque_serializer["produto"]}', 'detalhes': str(produto_estoque_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
+                                return Response({'erro': f'Erro no produto: {produto_estoque_serializer["produto"]}', 'detalhes': tratar_erros_serializer(produto_estoque_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
 
             data = {'sucesso': 'Venda cadastrada com sucesso.', 'venda_id': transacao_obj.id}
-            return Response(data, status=status.HTTP_200_OK)
+            return Response(data, status=status.HTTP_201_CREATED)
         
         except Exception as e:
             return Response({'erro': 'Erro ao cadastrar venda.', 'detalhes': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
+    def update(self, request, pk=None):
+        try:
+            transacao_obj = transacao.objects.get(pk=pk)
+            data = request.data
+            compra = json.loads(data['transacao'])
+            produtos_transacao = json.loads(data['produtos_transacao'])
+            
+            compra['empresa'] = request.user.empresa.id
+            compra['lucro'] = 0
+
+            with transaction.atomic():
+                compra_serializer = TransacaoSerializer(transacao_obj, data=compra, partial=True)
+                if compra_serializer.is_valid():
+                    transacao_obj = compra_serializer.save()
+                else:
+                    return Response({'erro': 'Erro ao cadastrar a compra', 'detalhes': tratar_erros_serializer(compra_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
+                
+                produto_transacao.objects.filter(transacao=transacao_obj).delete()
+
+                for produto_transacao_obj in produtos_transacao:
+                    produto_transacao_obj['transacao'] = transacao_obj.id
+                    produto_transacao_serializer = ProdutoTransacaoSerializer(data=produto_transacao_obj)
+                    if produto_transacao_serializer.is_valid():
+                        produto_transacao_serializer.save()
+                    else:
+                        return Response({'erro': f'Erro no produto: {produto_transacao_obj["produto"]}', 'detalhes': tratar_erros_serializer(produto_transacao_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
+
+            return Response({'sucesso': 'Compra atualizada com sucesso.'}, status=status.HTTP_200_OK)
+        except transacao.DoesNotExist:
+            return Response({'erro': 'Venda não encontrada'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'erro': 'Erro ao atualizar compra.', 'detalhes': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 class TrocaViewSet(viewsets.ViewSet):
 
     def create(self, request, *args, **kwargs):
@@ -245,6 +357,8 @@ class TrocaViewSet(viewsets.ViewSet):
 
             transacao['lucro'] = 0
             if transacao['calcular_lucro']:
+                if not 'valor_total_recebido' in transacao or not 'valor_total_pago' in transacao:
+                    return Response({'erro': 'Valor total recebido e valor total pago são obrigatórios'}, status=status.HTTP_400_BAD_REQUEST)
                 transacao['lucro'] = round(transacao['valor_total_recebido'] - transacao['valor_total_pago'])
 
             with transaction.atomic():
@@ -252,7 +366,7 @@ class TrocaViewSet(viewsets.ViewSet):
                 if transacao_serializer.is_valid():
                     transacao = transacao_serializer.save()
                 else:
-                    return Response({'erro': 'Erro ao cadastrar a troca', 'detalhes': str(transacao_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({'erro': 'Erro ao cadastrar a troca', 'detalhes': tratar_erros_serializer(transacao_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
 
                 for produto_transacao in produtos_transacao:
                     produto_transacao['transacao'] = transacao.id
@@ -260,10 +374,10 @@ class TrocaViewSet(viewsets.ViewSet):
                     if produto_transacao_serializer.is_valid():
                         produto_transacao_serializer.save()
                     else:
-                        return Response({'erro': f'Erro no produto: {produto_transacao["produto"]}', 'detalhes': str(produto_transacao_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
+                        return Response({'erro': f'Erro no produto: {produto_transacao["produto"]}', 'detalhes': tratar_erros_serializer(produto_transacao_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
 
             data = {'sucesso': 'Troca cadastrada com sucesso.'}
-            return Response(data, status=status.HTTP_200_OK)
+            return Response(data, status=status.HTTP_201_CREATED)
                 
         except Exception as e:
             return Response({'erro': 'Erro ao cadastrar a troca.', 'detalhes': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -7,6 +7,7 @@ from django.db import transaction
 
 from .models import nota_fiscal, nota_fiscal_produtos
 from .serializers import NotaFiscalSerializer, NotaFiscalProdutoSerializer
+from erp.utils import tratar_erros_serializer
 
 import json
 
@@ -25,7 +26,7 @@ class NotaFiscalViewSet(viewsets.ViewSet):
                 if nota_fiscal_serializer.is_valid():
                     nota_fiscal_obj = nota_fiscal_serializer.save()
                 else:
-                    return Response({'erro': 'Erro ao emitir a nota fiscal', 'detalhes': str(nota_fiscal_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({'erro': 'Erro ao emitir a nota fiscal', 'detalhes': tratar_erros_serializer(nota_fiscal_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
 
                 for produto_nota_fiscal in produtos_nota_fiscal:
                     produto_nota_fiscal['nota_fiscal'] = nota_fiscal_obj.id
@@ -33,7 +34,7 @@ class NotaFiscalViewSet(viewsets.ViewSet):
                     if produto_nota_fiscal_serializer.is_valid():
                         produto_nota_fiscal_serializer.save()
                     else:
-                        return Response({'erro': f'Erro no produto: {produto_nota_fiscal["produto"]}', 'detalhes': str(produto_nota_fiscal_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
+                        return Response({'erro': f'Erro no produto: {produto_nota_fiscal["produto"]}', 'detalhes': tratar_erros_serializer(produto_nota_fiscal_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
 
             data = {'sucesso': 'Nota fiscal emitida com sucesso.', "nota_fiscal": nota_fiscal_obj.id}
             return Response(data, status=status.HTTP_200_OK)

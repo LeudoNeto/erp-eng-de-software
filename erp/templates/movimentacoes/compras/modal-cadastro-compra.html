@@ -22,8 +22,8 @@
           </div>
           
           <div class="row px-2 mb-3">
-              <label for="produtos_vendidos" class="form-label">Produtos Vendidos:</label>
-              <button id="produtos_vendidos" type="button" data-bs-toggle="modal" data-bs-target="#tabela_produtos_cadastro_compra" class="btn btn-primary mx-2 mt-0">Selecionar</button>
+              <label for="produtos_comprados" class="form-label">Produtos Comprados:</label>
+              <button id="produtos_comprados" type="button" data-bs-toggle="modal" data-bs-target="#{% block modal_produtos %}tabela_produtos_cadastro_compra{% endblock modal_produtos %}" class="btn btn-primary mx-2 mt-0">Selecionar</button>
           </div>
 
           <div class="px-2 mb-3">
@@ -64,12 +64,14 @@
             </select>  
           </div>
 
-          <div class="px-2 mb-3">
-            <div class="form-check form-switch mb-3">
-              <input class="form-check-input" type="checkbox" id="adicionar_estoque">
-              <label class="form-check-label" for="adicionar_estoque">Adicionar produtos do Estoque</label>
+          {% block switches %}
+            <div class="px-2 mb-3">
+              <div class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" id="adicionar_estoque">
+                <label class="form-check-label" for="adicionar_estoque">Adicionar produtos do Estoque</label>
+              </div>
             </div>
-          </div>
+          {% endblock switches %}
         
         </div>
         <div class="modal-footer">

@@ -1,7 +1,7 @@
 {% load static %}
 
 <div class="col-md-6 col-lg-4 order-1 mb-4">
-  <div class="card h-100">
+  <div class="card">
     <div class="card-header">
       <ul class="nav nav-pills" role="tablist">
         <li class="nav-item">
@@ -10,41 +10,56 @@
             class="nav-link active"
             role="tab"
             data-bs-toggle="tab"
-            data-bs-target="#navs-tabs-line-card-income"
-            aria-controls="navs-tabs-line-card-income"
+            data-bs-target="#faturamento_tab"
+            aria-controls="faturamento_tab"
             aria-selected="true"
           >
             Faturamento
           </button>
         </li>
         <li class="nav-item">
-          <button type="button" class="nav-link" role="tab">Despesas</button>
+          <button
+            type="button"
+            class="nav-link"
+            role="tab"
+            data-bs-toggle="tab"
+            data-bs-target="#despesas_tab"
+            aria-controls="despesas_tab"
+          >
+          Despesas
+          </button>
         </li>
         <li class="nav-item">
-          <button type="button" class="nav-link" role="tab">Lucro</button>
+          <button
+            type="button"
+            class="nav-link"
+            role="tab"
+            data-bs-toggle="tab"
+            data-bs-target="#lucro_tab"
+            aria-controls="lucro_tab"
+          >
+          Lucro
+          </button>
         </li>
       </ul>
     </div>
     <div class="card-body px-0">
       <div class="tab-content p-0">
-        <div class="tab-pane fade show active" id="navs-tabs-line-card-income" role="tabpanel">
+        <div class="tab-pane fade show active" id="faturamento_tab" role="tabpanel">
           <div class="d-flex p-4 pt-3">
             <div class="avatar flex-shrink-0 me-3">
               <img src="{% static 'img/icons/unicons/wallet.png' %}" alt="User" />
             </div>
             <div>
-              <small class="text-muted d-block">Saldo Total</small>
+              <small class="text-muted d-block">Faturamento do último mês</small>
               <div class="d-flex align-items-center">
-                <h6 class="mb-0 me-1">R$459,10</h6>
-                <small class="text-success fw-semibold">
-                  <i class="bx bx-chevron-up"></i>
-                  42.9%
-                </small>
+                <h6 class="mb-0 me-1" id="faturamento_ultimo_mes"></h6>
+                
               </div>
             </div>
           </div>
-          <div id="incomeChart"></div>
-          <div class="d-flex justify-content-center pt-4 gap-2">
+          <div id="incomeChartFaturamento"></div>
+          {% comment %} <div class="d-flex justify-content-center pt-4 gap-2">
             <div class="flex-shrink-0">
               <div id="expensesOfWeek"></div>
             </div>
@@ -52,7 +67,57 @@
               <p class="mb-n1 mt-1">Despesas nessa semana</p>
               <small class="text-muted">R$39 a menos que semana passada</small>
             </div>
+          </div> {% endcomment %}
+        </div>
+
+        <div class="tab-pane fade" id="despesas_tab" role="tabpanel">
+          <div class="d-flex p-4 pt-3">
+            <div class="avatar flex-shrink-0 me-3">
+              <img src="{% static 'img/icons/unicons/wallet.png' %}" alt="User" />
+            </div>
+            <div>
+              <small class="text-muted d-block">Despesas do último mês</small>
+              <div class="d-flex align-items-center">
+                <h6 class="mb-0 me-1" id="despesas_ultimo_mes"></h6>
+                
+              </div>
+            </div>
           </div>
+          <div id="incomeChartDespesas"></div>
+          {% comment %} <div class="d-flex justify-content-center pt-4 gap-2">
+            <div class="flex-shrink-0">
+              <div id="expensesOfWeek"></div>
+            </div>
+            <div>
+              <p class="mb-n1 mt-1">Despesas nessa semana</p>
+              <small class="text-muted">R$39 a menos que semana passada</small>
+            </div>
+          </div> {% endcomment %}
+        </div>
+
+        <div class="tab-pane fade" id="lucro_tab" role="tabpanel">
+          <div class="d-flex p-4 pt-3">
+            <div class="avatar flex-shrink-0 me-3">
+              <img src="{% static 'img/icons/unicons/wallet.png' %}" alt="User" />
+            </div>
+            <div>
+              <small class="text-muted d-block">Lucro do último mês</small>
+              <div class="d-flex align-items-center">
+                <h6 class="mb-0 me-1" id="lucro_ultimo_mes"></h6>
+
+              </div>
+            </div>
+          </div>
+          <div id="incomeChartLucro"></div>
+          {% comment %} <div class="d-flex justify-content-center pt-4 gap-2">
+            <div class="flex-shrink-0">
+              <div id="expensesOfWeek"></div>
+            </div>
+            <div>
+              <p class="mb-n1 mt-1">Despesas nessa semana</p>
+              <small class="text-muted">R$39 a menos que semana passada</small>
+            </div>
+          </div> {% endcomment %}
         </div>
       </div>
     </div>

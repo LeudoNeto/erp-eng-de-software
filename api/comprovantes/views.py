@@ -7,6 +7,7 @@ from django.db import transaction
 
 from .models import comprovante, comprovante_produtos
 from .serializers import ComprovanteSerializer, ComprovanteProdutoSerializer
+from erp.utils import tratar_erros_serializer
 
 import json
 
@@ -25,7 +26,7 @@ class ComprovanteViewSet(viewsets.ViewSet):
                 if comprovante_serializer.is_valid():
                     comprovante = comprovante_serializer.save()
                 else:
-                    return Response({'erro': 'Erro ao emitir o comprovante', 'detalhes': str(comprovante_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({'erro': 'Erro ao emitir o comprovante', 'detalhes': tratar_erros_serializer(comprovante_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
 
                 for produto_comprovante in produtos_comprovante:
                     produto_comprovante['comprovante'] = comprovante.id
@@ -33,7 +34,7 @@ class ComprovanteViewSet(viewsets.ViewSet):
                     if produto_comprovante_serializer.is_valid():
                         produto_comprovante_serializer.save()
                     else:
-                        return Response({'erro': f'Erro no produto: {produto_comprovante["produto"]}', 'detalhes': str(produto_comprovante_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
+                        return Response({'erro': f'Erro no produto: {produto_comprovante["produto"]}', 'detalhes': tratar_erros_serializer(produto_comprovante_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
 
             data = {'sucesso': 'Comprovante emitido com sucesso.', "comprovante": comprovante.id}
             return Response(data, status=status.HTTP_200_OK)

@@ -43,9 +43,9 @@
                   <i class="bx bx-dots-vertical-rounded"></i>
                 </button>
                 <div class="dropdown-menu">
-                  {% comment %} <a class="dropdown-item" href="#" data-id="{{ transacao.id }}" id="editar_movimentacao" data-bs-toggle="modal" data-bs-target="#modal_editar_produto"
+                  <a class="dropdown-item" href="#" data-id="{{ transacao.id }}" id="editar_compra" data-bs-toggle="modal" data-bs-target="#modal_editar_compra"
                     ><i class="bx bx-edit-alt me-1"></i>Editar</a
-                  > {% endcomment %}
+                  >
                   <a class="dropdown-item" href="#" data-id="{{ transacao.id }}" id="excluir_compra"
                     ><i class="bx bx-trash me-1"></i>Excluir</a
                   >
@@ -61,6 +61,8 @@
 
 {% include "movimentacoes/compras/modal-cadastro-compra.html" %}
 {% include "movimentacoes/compras/tabelas-produtos/tabela-produtos-cadastro.html" %}
+{% include "movimentacoes/compras/modal-editar-compra.html" %}
+{% include "movimentacoes/compras/tabelas-produtos/tabela-produtos-editar.html" %}
 
 <script src="{% static "js/movimentacoes/compras.js" %}"></script>
 

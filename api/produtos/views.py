@@ -7,6 +7,7 @@ from django.http import FileResponse
 
 from .models import produto
 from .serializers import ProdutoSerializer
+from erp.utils import tratar_erros_serializer
 
 class ProdutoViewSet(viewsets.ViewSet):
 
@@ -19,26 +20,6 @@ class ProdutoViewSet(viewsets.ViewSet):
             return Response({'erro': 'Produto não encontrado'}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({'erro': 'Erro ao buscar produto', 'detalhes': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-    @action(detail=True, methods=['get'])
-    def get_produto_foto(self, request, pk=None):
-        try:
-            produto_obj = produto.objects.get(pk=pk)
-            if produto_obj.foto:
-                user_foto = open(str(produto_obj.foto.path), "rb")
-                response = FileResponse(user_foto)
-                response["Content-Type"] = f'image/{str(produto_obj.foto).split(".")[-1]}'
-                return response
-            else:
-                return Response(status=status.HTTP_404_NOT_FOUND)
-
-        except produto.DoesNotExist:
-            print(e)
-            return Response({'erro': 'Produto não encontrado'}, status=status.HTTP_404_NOT_FOUND)
-        except Exception as e:
-            print(e)
-            return Response({'erro': 'Erro ao buscar produto', 'detalhes': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
     def create(self, request, *args, **kwargs):
         try:
@@ -53,7 +34,7 @@ class ProdutoViewSet(viewsets.ViewSet):
             else:
                 errors = produto_serializer.errors
                 if errors:
-                    return Response({'erro': 'Erro ao criar produto', 'detalhes': str(errors)}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({'erro': 'Erro ao criar produto', 'detalhes': tratar_erros_serializer(errors)}, status=status.HTTP_400_BAD_REQUEST)
                 else:
                     return Response({'erro': 'Erro ao criar produto', 'detalhes': 'Erro de validação'}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
@@ -76,9 +57,11 @@ class ProdutoViewSet(viewsets.ViewSet):
             else:
                 errors = produto_serializer.errors
                 if errors:
-                    return Response({'erro': 'Erro ao editar produto', 'detalhes': str(errors)}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({'erro': 'Erro ao editar produto', 'detalhes': tratar_erros_serializer(errors)}, status=status.HTTP_400_BAD_REQUEST)
                 else:
                     return Response({'erro': 'Erro ao editar produto', 'detalhes': 'Erro de validação'}, status=status.HTTP_400_BAD_REQUEST)
+        except produto.DoesNotExist:
+            return Response({'erro': 'Produto não encontrado'}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({'erro': 'Erro ao editar produto', 'detalhes': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

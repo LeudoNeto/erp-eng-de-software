@@ -3,7 +3,9 @@ document.addEventListener("DOMContentLoaded", function() {
     var form_cadastro_troca = document.querySelector("#form_cadastro_troca");
     var salvar_troca = modal_cadastro_troca.querySelector("#salvar_troca");
 
-    var excluir_troca_buttons = document.querySelectorAll("#excluir_troca")
+    var excluir_troca_buttons = document.querySelectorAll("#excluir_troca");
+
+    const csrf_token = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
     salvar_troca.addEventListener('click', function() {
         swal.fire({
@@ -114,7 +116,10 @@ document.addEventListener("DOMContentLoaded", function() {
             }).then((result) => {
                 if (result.isConfirmed) {
                     fetch("/api/movimentacoes/" + troca_id, {
-                        method: "DELETE"
+                        method: "DELETE",
+                        headers: {
+                            "X-CSRFToken": csrf_token,
+                        }
                     })
                     .then(response => {
                         if (response.ok) {

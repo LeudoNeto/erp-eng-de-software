@@ -26,6 +26,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 cancelButtonText: "Cancelar"
             }).then((result) => {
                 let formData = new FormData(form_adicionar_produto);
+                formData.append('valor_custo', formData.get('valor_custo').replace(/\D/g, '')/100);
+                formData.append('valor_venda', formData.get('valor_venda').replace(/\D/g, '')/100);
 
                 if (result.isConfirmed) {
                     fetch("/api/produtos_estoque/", {
@@ -114,6 +116,8 @@ document.addEventListener("DOMContentLoaded", function() {
             }).then((result) => {
                 let produto_id = salvar_editar_produto.dataset.id;
                 let formData = new FormData(form_editar_produto);
+                formData.append('valor_custo', formData.get('valor_custo').replace(/\D/g, '')/100);
+                formData.append('valor_venda', formData.get('valor_venda').replace(/\D/g, '')/100);
 
                 if (result.isConfirmed) {
                     fetch(`/api/produtos_estoque/${produto_id}/`, {

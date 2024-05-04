@@ -12,6 +12,7 @@ from .serializers import (
     CategoriaPermissaoSerializer,
     PermissaoSerializer
 )
+from erp.utils import tratar_erros_serializer
 
 class LoginViewSet(viewsets.ViewSet):
 
@@ -62,7 +63,7 @@ class CargoViewSet(viewsets.ViewSet):
 
             serializer = CargoSerializer(data=data)
             if not serializer.is_valid():
-                return Response({'erro': 'Erro ao criar cargo', 'detalhes': str(serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'erro': 'Erro ao criar cargo', 'detalhes': tratar_erros_serializer(serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
             
             serializer.save()
             return Response({'sucesso': 'Cargo criado com sucesso'}, status=status.HTTP_201_CREATED)
@@ -81,7 +82,7 @@ class CargoViewSet(viewsets.ViewSet):
             
             serializer = CargoSerializer(cargo, data=data)
             if not serializer.is_valid():
-                return Response({'erro': 'Erro ao atualizar cargo', 'detalhes': str(serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'erro': 'Erro ao atualizar cargo', 'detalhes': tratar_erros_serializer(serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
             
             serializer.save()
             return Response({'sucesso': 'Cargo atualizado com sucesso'}, status=status.HTTP_200_OK)

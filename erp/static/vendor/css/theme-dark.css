@@ -1482,3 +1482,11 @@ html:not(.layout-menu-collapsed) .bg-menu-theme .menu-inner .menu-item.open>.men
 .layout-footer-fixed .content-footer {
   box-shadow: 0 0 .375rem .25rem rgba(0,0,0,.15)
 }
+
+.atalho-icon {
+  color: #ff6c90;
+  background-color: #67354d;
+  font-size: 1.9rem;
+  padding: 0.1rem;
+  border-radius: 0.25rem;
+}
