@@ -42,12 +42,12 @@ class ProdutoViewSetTestCase(ErpTestCase):
         )
         request = self.factory.get('/api/produto/{}/'.format(produto_obj.pk))
         response = self.view(request, pk=produto_obj.pk)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, 200)
 
     def test_retrieve_nonexistent_produto(self):
         request = self.factory.get('/api/produto/9999/')
         response = self.view(request, pk=9999)
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, 404)
 
     def test_create_produto_success(self):
         data = {
@@ -61,7 +61,7 @@ class ProdutoViewSetTestCase(ErpTestCase):
         request = self.factory.post('/api/produto/', data)
         request.user = self.user
         response = self.view(request)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, 201)
 
     def test_create_produto_missing_fields(self):
         # Test missing required fields
@@ -75,7 +75,7 @@ class ProdutoViewSetTestCase(ErpTestCase):
             request = self.factory.post('/api/produto/', data_missing)
             request.user = self.user
             response = self.view(request)
-            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+            self.assertEqual(response.status_code, 400)
 
     def test_put_existing_produto(self):
         produto_obj = produto.objects.create(
@@ -98,7 +98,7 @@ class ProdutoViewSetTestCase(ErpTestCase):
         request = self.factory.put('/api/produto/{}/'.format(produto_obj.pk), data)
         request.user = self.user
         response = self.view(request, pk=produto_obj.pk)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, 200)
 
     def test_put_nonexistent_produto(self):
         data = {
@@ -112,7 +112,7 @@ class ProdutoViewSetTestCase(ErpTestCase):
         request = self.factory.put('/api/produto/9999/', data)
         request.user = self.user
         response = self.view(request, pk=9999)
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, 404)
 
     def test_delete_existing_produto(self):
         produto_obj = produto.objects.create(
@@ -127,10 +127,10 @@ class ProdutoViewSetTestCase(ErpTestCase):
         request = self.factory.delete('/api/produto/{}/'.format(produto_obj.pk))
         request.user = self.user
         response = self.view(request, pk=produto_obj.pk)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, 200)
 
     def test_delete_nonexistent_produto(self):
         request = self.factory.delete('/api/produto/9999/')
         request.user = self.user
         response = self.view(request, pk=9999)
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, 404)

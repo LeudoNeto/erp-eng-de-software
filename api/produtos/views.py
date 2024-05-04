@@ -30,7 +30,7 @@ class ProdutoViewSet(viewsets.ViewSet):
             if produto_serializer.is_valid():
                 produto_serializer.save()
                 data = {'sucesso': 'Produto criado com sucesso.'}
-                return Response(data, status=status.HTTP_200_OK)
+                return Response(data, status=status.HTTP_201_CREATED)
             else:
                 errors = produto_serializer.errors
                 if errors:
