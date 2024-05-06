@@ -1,10 +1,10 @@
 @echo off
 
 echo Iniciando servidor Django...
-start /B cmd /c "python manage.py runserver 2030"
+start /B cmd /c "python ../../manage.py runserver 2030"
 
-echo Iniciando servidor React...
-start /B cmd /c "cd .\jsketcher\ && npm start"
+rem echo Iniciando servidor React...
+rem start /B cmd /c "cd ../../jsketcher/ && npm start"
 
 echo Aguardando servidor React iniciar...
 timeout /t 15 /nobreak >nul

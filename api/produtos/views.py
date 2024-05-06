@@ -65,7 +65,6 @@ class ProdutoViewSet(viewsets.ViewSet):
         except Exception as e:
             return Response({'erro': 'Erro ao editar produto', 'detalhes': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
     def destroy(self, request, pk=None):
         try:
             produto_obj = produto.objects.get(pk=pk)
